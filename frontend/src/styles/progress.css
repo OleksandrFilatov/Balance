@@ -1,0 +1,27 @@
+.balance-progress { min-width:0;--progress-start:#5c7ee9;--progress-end:#a18bde; }
+.balance-progress[data-tone="success"] { --progress-start:#389e8a;--progress-end:#73b9aa; }
+.balance-progress[data-tone="warning"] { --progress-start:#cc8c4e;--progress-end:#e3b58b; }
+.balance-progress-caption { display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:9px;font-size:11px;color:var(--muted-foreground); }
+.balance-progress-caption strong { color:var(--foreground);font-size:12px;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap; }
+.balance-progress-track { position:relative;height:12px;border-radius:999px;background:color-mix(in srgb,var(--accent) 8%,var(--card));overflow:hidden;box-shadow:inset 0 1px 3px #182b4012; }
+.balance-progress-fill { display:block;position:relative;height:100%;width:var(--progress);border-radius:inherit;background:linear-gradient(110deg,var(--progress-start),var(--progress-end));box-shadow:inset 0 1px 0 #ffffff60,0 0 9px color-mix(in srgb,var(--accent) 28%,transparent);transition:width .7s cubic-bezier(.22,1,.36,1); }
+.balance-progress-track::after { content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(20% - 1px),color-mix(in srgb,var(--card) 70%,transparent) calc(20% - 1px),color-mix(in srgb,var(--card) 70%,transparent) 20%); }
+.debt-month-segments .balance-progress-track::after { display:none; }
+.balance-progress-fill::after { content:"";position:absolute;inset:2px 4px auto;height:2px;border-radius:999px;background:#ffffff30; }
+.goal-preview>.balance-progress { margin:15px 0; }
+.debt-month-segments .balance-progress-track { height:14px;border-radius:5px; }
+.debt-month-segments .balance-progress-fill { border-radius:5px; }
+.debt-month-segments.is-compact { overflow:visible;gap:5px; }
+.debt-month-segments.is-compact>.debt-month-segment { flex:1 1 0;min-width:0; }
+.debt-month-segments { display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;overflow:visible; }
+.debt-month-segments.is-compact { grid-template-columns:repeat(3,minmax(0,1fr));gap:7px; }
+.debt-month-segment { display:flex;flex-direction:column;gap:6px;background:var(--studio-soft);border:1px solid var(--border);border-radius:10px;padding:10px 8px;min-width:0; }
+.debt-month-segment>span { order:-3;font-size:10px;text-align:left;margin:0; }
+.debt-month-segment>.installment-caption { order:-2;color:var(--muted-foreground);font-size:9px; }
+.debt-month-segment>.installment-amount { order:-1;font-size:12px;font-weight:650;letter-spacing:-.2px;line-height:1.4;overflow-wrap:anywhere;font-variant-numeric:tabular-nums; }
+.installment-amount.is-paid { color:var(--green);font-size:11px; }
+.debt-month-segments .balance-progress-track { height:7px;border-radius:5px;margin-top:3px; }
+.dark .balance-progress { --progress-start:#91a5ff;--progress-end:#b69aeb; }
+.dark .balance-progress[data-tone="success"] { --progress-start:#61c5aa;--progress-end:#96d5bd; }
+.dark .balance-progress[data-tone="warning"] { --progress-start:#d5a36e;--progress-end:#e9c69d; }
+@media(prefers-reduced-motion:reduce) { .balance-progress-fill { transition:none; } }

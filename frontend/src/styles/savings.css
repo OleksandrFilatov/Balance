@@ -1,0 +1,204 @@
+.savings-summary {
+  margin: 24px 0;
+}
+.savings-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.savings-metrics > div {
+  padding: 22px;
+  gap: 14px;
+}
+.savings-metrics span {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+.savings-metrics strong {
+  font-size: 26px;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.goals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.goal-card,
+.goal-detail,
+.savings-nearest {
+  padding: 24px;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.goal-card h2,
+.goal-detail h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+.goal-description {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.goal-amount {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+.goal-amount strong {
+  font-size: 27px;
+  overflow-wrap: anywhere;
+}
+.goal-amount span,
+.goal-caption {
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+.goal-caption {
+  display: flex;
+  justify-content: space-between;
+}
+.goal-actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.forecast-grid {
+  grid-template-columns: 1fr 1fr;
+}
+.forecast-list > div,
+.allocation-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.forecast-list dt {
+  color: var(--muted-foreground);
+}
+.forecast-list dd {
+  text-align: right;
+  font-weight: 600;
+}
+.savings-warning {
+  display: flex;
+  gap: 12px;
+  background: var(--orange-soft);
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+.savings-warning p {
+  font-size: 12px;
+  margin-top: 8px;
+  line-height: 1.7;
+}
+.savings-warning svg {
+  flex-shrink: 0;
+  color: var(--accent);
+}
+.nearest-goal {
+  display: block;
+  padding: 14px 0;
+}
+.nearest-goal > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.nearest-goal span {
+  color: var(--muted-foreground);
+}
+.savings-history > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 17px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+}
+.savings-history p {
+  overflow-wrap: anywhere;
+  color: var(--muted-foreground);
+  margin: 6px 0;
+}
+.savings-history small {
+  color: var(--muted-foreground);
+}
+@media (max-width: 1100px) {
+  .goals-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (max-width: 760px) {
+  .savings-metrics {
+    grid-template-columns: 1fr 1fr;
+  }
+  .savings-metrics > div:last-child {
+    grid-column: span 2;
+  }
+  .savings-metrics strong {
+    font-size: 22px;
+  }
+  .goals-grid {
+    grid-template-columns: 1fr;
+  }
+  .mobile-nav {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  .mobile-nav > a {
+    min-width: 52px;
+    padding: 6px 7px;
+    font-size: 8px;
+  }
+  .mobile-nav .mobile-add {
+    width: 36px;
+    height: 36px;
+  }
+  .nearest-goal > div:first-child {
+    flex-direction: column;
+  }
+  .forecast-list > div {
+    gap: 10px;
+  }
+  .savings-history > div > span {
+    white-space: nowrap;
+  }
+}
+.page-heading > div {
+  min-width: 0;
+}
+.page-heading h1,
+.goal-card h2 {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .mobile-nav {
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 4px;
+  }
+  .mobile-nav > a {
+    flex: 1;
+    min-width: 48px;
+    padding: 6px 4px;
+  }
+  .mobile-nav .mobile-add {
+    flex-shrink: 0;
+    min-width: 36px;
+  }
+}
+
+.goal-deadline-plan { display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:12px 14px;border-radius:12px;background:var(--accent-soft,var(--muted));font-size:12px;line-height:1.5;overflow-wrap:anywhere; }
+.goal-deadline-plan strong { display:flex;flex-wrap:wrap;align-items:baseline;gap:7px;font-size:21px;line-height:1.3;font-variant-numeric:tabular-nums; }
+.goal-deadline-plan small { font-size:11px;font-weight:400;color:var(--muted-foreground); }
+.goal-deadline-plan .button { padding:3px 0;min-height:28px; }

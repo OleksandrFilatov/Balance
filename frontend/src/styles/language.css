@@ -1,0 +1,12 @@
+.language-select { display:inline-flex;align-items:center;gap:7px;min-width:0;max-width:170px;height:36px;padding:0 9px;border:1px solid var(--border);border-radius:11px;background:var(--card);color:var(--muted-foreground); }
+.language-select>svg { flex-shrink:0; }
+.language-select select { font:inherit;font-size:12px;font-weight:500;color:var(--foreground);background:transparent;border:0;outline:0;min-width:0;max-width:130px;cursor:pointer; }
+.language-select:focus-within { outline:2px solid var(--accent);outline-offset:2px; }
+.language-select option { background:var(--card);color:var(--foreground); }
+@media(max-width:800px) {
+  .everyday-header-actions .language-select { width:34px;max-width:34px;padding:0;border:0;background:transparent;position:relative;flex-shrink:0;justify-content:center; }
+  .everyday-header-actions .language-select select { position:absolute;inset:0;width:100%;height:100%;opacity:0; }
+  .everyday-header-actions .language-select>svg { pointer-events:none; }
+  .everyday-shell .everyday-header-actions { gap:5px; }
+}
+@media(prefers-reduced-motion:reduce) { .language-select { transition:none; } }

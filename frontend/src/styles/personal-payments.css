@@ -1,0 +1,54 @@
+.mandatory-payments { min-width:0; }
+.mandatory-payments>h2 { font-size:12px;font-weight:600;line-height:1.5;margin:0 0 10px;color:var(--muted-foreground); }
+.mandatory-rows { display:grid; }
+.mandatory-row { display:grid;grid-template-columns:30px minmax(0,1fr) auto 13px;align-items:center;gap:9px;min-height:47px;border-radius:9px;padding:6px 0; }
+.mandatory-row:hover { background:var(--studio-soft); }
+.mandatory-row>span:not(.mandatory-icon) { font-size:12px;line-height:1.5;color:var(--foreground); }
+.mandatory-row>strong,.daily-metric .mandatory-row>strong { font-size:13px;letter-spacing:-.2px;font-weight:650;white-space:nowrap;font-variant-numeric:tabular-nums; }
+.mandatory-row>svg { color:var(--muted-foreground); }
+.mandatory-icon { display:grid;place-items:center;width:29px;height:29px;border-radius:9px;background:var(--accent-soft);color:var(--accent); }
+.mandatory-icon.household { color:#af8651;background:color-mix(in srgb,#af8651 10%,var(--card)); }
+.mandatory-icon.personal { color:#8173ac;background:color-mix(in srgb,#8173ac 10%,var(--card)); }
+.mandatory-total { display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-top:1px solid var(--border);margin-top:10px;padding-top:14px; }
+.mandatory-total>span { font-size:11px;line-height:1.5;color:var(--muted-foreground); }
+.mandatory-total>strong,.daily-metric .mandatory-total>strong { font-size:21px;font-weight:650;letter-spacing:-.5px;white-space:nowrap;font-variant-numeric:tabular-nums; }
+.mandatory-payments>p { font-size:10px;color:var(--muted-foreground);line-height:1.6;margin:10px 0 0; }
+.studio-month>.mandatory-payments { padding-top:16px;border-top:1px solid var(--border);margin-top:8px; }
+.daily-metric.obligations-card { padding:21px; }
+.money-actual-expense { border-top:1px solid var(--border);margin-top:12px;padding-top:18px;display:grid;gap:12px; }
+.money-actual-expense>span { font-size:12px;color:var(--muted-foreground); }
+.money-actual-expense>strong { font-size:25px; }
+.daily-metrics.money-history-metrics { grid-template-columns:2fr 1fr; }
+.personal-expenses-summary { display:flex;flex-direction:row;justify-content:space-between;align-items:center;gap:20px;padding:21px;margin-bottom:20px; }
+.personal-expenses-summary>div { display:grid;gap:10px;min-width:0; }
+.personal-expenses-summary span { font-size:12px;color:var(--muted-foreground); }
+.personal-expenses-summary strong { font-size:27px;letter-spacing:-.7px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere; }
+.personal-expenses-summary>p { max-width:380px;font-size:12px;line-height:1.7;color:var(--muted-foreground); }
+.personal-payment-options>summary { cursor:pointer;min-height:40px;padding:8px 0;font-size:12px;color:var(--muted-foreground); }
+.personal-payment-options>.form-stack { padding-top:10px; }
+.personal-routine-actions { border-top:1px solid var(--border);padding-top:9px;gap:6px; }
+.personal-routine-actions>.button-icon { flex:0 0 40px;width:40px;min-height:40px; }
+.personal-routine-actions>.delete-action { margin-left:auto; }
+.household-settlement-actions { display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px; }
+.household-settlement-actions>.button { font-size:12px; }
+.household-deferral-note { display:flex;align-items:center;gap:12px;padding:16px 18px;border:1px solid var(--border);border-radius:14px;background:var(--card);margin:12px 0; }
+.household-deferral-note>svg { flex-shrink:0;color:var(--accent); }
+.household-deferral-note>div { display:grid;gap:5px;min-width:0;flex:1; }
+.household-deferral-note strong { font-size:12px;line-height:1.5; }
+.household-deferral-note span { font-size:11px;color:var(--muted-foreground);line-height:1.5; }
+.household-arrear-actions { display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end; }
+.household-schedule-link { display:block;padding:10px 14px;margin-top:7px;border:1px solid var(--border);border-radius:10px;font-size:11px;color:var(--accent);background:var(--card);text-align:center; }
+.household-schedule-link:hover { background:var(--accent-soft); }
+@media(max-width:600px) { .household-settlement-actions { justify-content:stretch;width:100%; }.household-settlement-actions>.button { flex:1 1 200px; }.household-deferral-note { flex-wrap:wrap; }.household-deferral-note>.button { margin-left:auto; }.household-arrear-actions { grid-column:1/-1; } }
+@media(max-width:600px) { .daily-metrics.money-history-metrics { grid-template-columns:minmax(0,1fr); } }
+@media(min-width:801px) and (max-width:1300px) { .daily-metrics:has(.obligations-card) { grid-template-columns:repeat(2,minmax(0,1fr)); }.daily-metrics:has(.obligations-card)>.daily-total { grid-column:1/-1; } }
+@media(max-width:800px) {
+ .daily-metrics:has(.obligations-card) { grid-template-columns:minmax(0,1fr); }
+ .income-metric:has(.money-actual-expense) { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px; }
+ .income-metric:has(.money-actual-expense)>span { grid-column:1;grid-row:1; }
+ .income-metric:has(.money-actual-expense)>strong { grid-column:1;grid-row:2; }
+ .income-metric>.money-actual-expense { grid-column:2;grid-row:1/span 2;border-top:0;border-left:1px solid var(--border);padding:0 0 0 16px;margin:0;gap:8px; }
+ .income-metric:not(:has(.money-actual-expense)) { flex-direction:row;align-items:center;justify-content:space-between; }
+ .income-metric>strong,.money-actual-expense>strong { font-size:24px;overflow-wrap:anywhere; }
+}
+@media(max-width:600px) { .mandatory-row { grid-template-columns:27px minmax(0,1fr) auto 11px;gap:7px; }.mandatory-row>span:not(.mandatory-icon) { font-size:11px; }.mandatory-row>strong,.daily-metric .mandatory-row>strong { font-size:12px; }.personal-expenses-summary { flex-direction:column;align-items:stretch;padding:18px;gap:12px; }.personal-expenses-summary>p { margin:0; }.daily-metric.obligations-card { padding:18px; } }

@@ -1,0 +1,119 @@
+.budget-toolbar {
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 16px;
+}
+.budget-toolbar > .field {
+  flex: 1 1 170px;
+}
+.budget-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.budget-metric {
+  padding: 22px;
+  min-width: 0;
+}
+.budget-metric strong {
+  display: block;
+  font-size: clamp(1.2rem, 2vw, 1.65rem);
+  overflow-wrap: anywhere;
+}
+.budget-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--danger, #b65036);
+  font-size: 0.85rem;
+  margin: 12px 0;
+}
+.budget-category-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.budget-category {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  min-width: 0;
+}
+.budget-category h3 {
+  overflow-wrap: anywhere;
+}
+.budget-category.over-budget {
+  border-color: #c26a4f;
+}
+.budget-category-values,
+.budget-mini-totals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.budget-mini-totals {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.budget-category-values dt,
+.budget-mini-totals dt {
+  font-size: 0.76rem;
+  color: var(--muted-foreground);
+}
+.budget-category-values dd,
+.budget-mini-totals dd {
+  margin: 4px 0 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.budget-analysis-grid,
+.budget-dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  margin: 24px 0;
+}
+.budget-dashboard-grid {
+  margin-bottom: 0;
+}
+.budget-dashboard-scope {
+  min-width: 0;
+}
+.budget-large {
+  font-size: 2rem;
+  font-weight: 600;
+  margin: 20px 0;
+}
+.budget-fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.budget-limit-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 16px;
+}
+@media (max-width: 760px) {
+  .budget-analysis-grid,
+  .budget-dashboard-grid,
+  .budget-category-list {
+    grid-template-columns: 1fr;
+  }
+  .budget-mini-totals {
+    grid-template-columns: 1fr;
+  }
+  .budget-toolbar > button {
+    width: 100%;
+  }
+  .budget-limit-inputs {
+    grid-template-columns: 1fr;
+  }
+  .budget-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

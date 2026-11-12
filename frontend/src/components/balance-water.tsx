@@ -1,0 +1,2 @@
+/** Decorative only: the wave height is deliberately independent of money and progress. */
+export function BalanceWater(){return <div className="balance-water" aria-hidden="true"><svg viewBox="0 0 800 120" preserveAspectRatio="none"><path d="M0 30 Q100 0 200 30 T400 30 T600 30 T800 30 V120 H0Z"/></svg><svg viewBox="0 0 800 120" preserveAspectRatio="none"><path d="M0 35 Q100 65 200 35 T400 35 T600 35 T800 35 V120 H0Z"/></svg></div>;}

@@ -1,0 +1,30 @@
+.studio-balance { padding:23px 25px;isolation:isolate; }
+.studio-balance>strong { font-size:clamp(32px,3.4vw,46px);margin:17px 0 8px;letter-spacing:-1.6px; }
+.studio-balance .balance-remainder { margin-top:18px;padding-top:16px; }.studio-balance .balance-remainder>strong { font-size:27px; }
+.studio-balance .balance-actions { margin-top:19px; }.studio-month { padding:22px; }.studio-flow { padding:19px 0; }.studio-flow strong { font-size:25px; }
+.studio-snapshot { gap:14px; }.snapshot-card { padding:18px 20px; }.snapshot-card strong { font-size:23px; }
+.money-balance-surface { position:relative;overflow:hidden;isolation:isolate; }
+.balance-water { position:absolute!important;inset:auto 0 0!important;width:100%;height:48%;overflow:hidden;pointer-events:none;z-index:0!important;opacity:.12; }
+.balance-water svg { position:absolute;left:0;bottom:-1px;width:200%;height:100%;fill:#89a9ef; }
+.balance-water svg+svg { fill:#b3caff;opacity:.5;height:85%; }
+.studio-balance>:not(.balance-water),.money-balance-surface>:not(.balance-water) { position:relative;z-index:1; }
+.money-balance-surface .balance-water { opacity:.055; }.dark .money-balance-surface .balance-water { opacity:.1; }
+.balance-progress-fill::before { content:"";position:absolute;inset:0 auto 0 0;width:48%;background:linear-gradient(90deg,transparent,#fff4,transparent);transform:translateX(-130%);pointer-events:none; }
+.ira-month-note { margin:16px 0 8px; }.household-person-total { align-self:start; }
+.cash-outlook { padding:22px;margin-bottom:22px;gap:16px;min-width:0; }
+.outlook-totals { display:flex;flex-wrap:wrap;gap:18px 36px; }.outlook-totals>div { display:grid;gap:5px; }.outlook-totals span { font-size:11px;color:var(--muted-foreground); }.outlook-totals strong { font-size:22px;font-variant-numeric:tabular-nums; }
+.outlook-chart { height:160px;min-width:0; }.outlook-legend { display:flex;gap:20px;font-size:10px;color:var(--muted-foreground); }.outlook-legend span { display:flex;align-items:center;gap:5px; }.outlook-legend i { width:7px;height:7px;border-radius:2px;background:#687fe4; }.outlook-legend span+span i { background:#b5bdef; }
+.outlook-lines { display:grid;gap:2px; }.outlook-lines>a { display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--border);min-width:0; }.outlook-lines>a>div { display:grid;gap:5px;min-width:0;flex:1; }.outlook-lines strong { font-size:12px;font-weight:550;overflow-wrap:anywhere; }.outlook-lines small { font-size:10px;color:var(--muted-foreground);line-height:1.5; }.outlook-lines b { font-size:12px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;max-width:42%;text-align:right; }
+.outlook-lines strong { display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden; }.statistics-actual-details>summary { padding:10px 0 18px;cursor:pointer;font-size:12px;color:var(--muted-foreground); }.statistics-actual-details .statistics-metrics { margin-bottom:18px; }
+.studio-balance .balance-remainder>strong.balance-pending { font-size:20px; }
+.outlook-line-icon { display:grid;place-items:center;width:29px;height:29px;flex-shrink:0;border-radius:9px;background:var(--muted);color:var(--accent); }.outlook-line-icon.outgoing { color:#c48b59; }
+.recurring-rules-list { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start; }
+.recurring-rules-list>.recurring-rule { padding:18px;gap:12px;min-width:0; }.recurring-rule h2 { font-size:15px; }.recurring-rule-heading { gap:10px; }.recurring-rule-icon { width:32px;height:32px;border-radius:10px; }.recurring-rule-icon svg { width:16px;height:16px; }.recurring-rule-amount { font-size:19px;white-space:normal;overflow-wrap:anywhere; }.recurring-rule-meta { font-size:11px; }.recurring-rule-heading p { font-size:10px; }
+.recurring-rule-actions:empty { display:none; }
+.button,.snapshot-card,.home-category-button,.goal-card { transition:background-color .18s,border-color .18s,box-shadow .18s; }
+@keyframes balance-water-drift { from{transform:translate3d(0,0,0);}to{transform:translate3d(-50%,0,0);} }
+@keyframes balance-progress-glow { from{transform:translateX(-130%);}to{transform:translateX(330%);} }
+@media(prefers-reduced-motion:no-preference) { .balance-water svg { animation:balance-water-drift 13s linear infinite; }.balance-water svg+svg { animation-duration:19s;animation-direction:reverse; }.balance-progress-fill::before { animation:balance-progress-glow 4.8s ease-in-out infinite; } }
+@media(max-width:850px) { .recurring-rules-list { grid-template-columns:minmax(0,1fr); } }
+@media(max-width:600px) { .studio-balance { padding:21px; }.studio-balance>strong { font-size:37px;margin-top:17px; }.studio-balance .balance-remainder>strong { font-size:25px; }.studio-flow strong { font-size:24px; }.cash-outlook { padding:17px; }.outlook-totals { gap:15px; }.outlook-totals>div { flex:1;min-width:0; }.outlook-totals strong { font-size:20px;overflow-wrap:anywhere; }.outlook-lines>a { gap:8px; }.outlook-line-icon { display:none; }.recurring-rule-amount { font-size:18px; } }
+@media(prefers-reduced-motion:reduce) { .balance-water svg,.balance-progress-fill::before { animation:none!important; }.button,.snapshot-card,.home-category-button,.goal-card { transition:none!important; } }

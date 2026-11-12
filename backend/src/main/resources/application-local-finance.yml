@@ -1,0 +1,4 @@
+balance:
+  local:
+    username: ${BALANCE_LOCAL_USERNAME}
+    password: ${BALANCE_LOCAL_PASSWORD}

@@ -1,0 +1,53 @@
+.month-picker-trigger.button { display:inline-flex;align-items:center;gap:10px;min-height:44px;width:auto;height:auto;padding:9px 12px;background:var(--card);border:1px solid var(--border);font-size:13px;white-space:nowrap; }
+.month-picker-trigger>span { flex:1;text-align:left;text-transform:capitalize; }
+.month-picker-trigger>svg { flex-shrink:0;color:var(--muted-foreground); }
+.month-picker-trigger>svg:last-child { width:14px; }
+.money-month-picker>.month-picker-trigger.button,.statistics-month-picker>.month-picker-trigger.button { width:auto;min-width:180px;height:42px;min-height:42px;border:0;background:transparent; }
+.month-picker-popover { position:fixed;z-index:100;max-height:calc(100dvh - 24px);overflow:auto;padding:12px;background:var(--card);color:var(--foreground);border:1px solid var(--border);border-radius:18px;box-shadow:0 16px 55px #15244126;outline:none;animation:month-picker-enter .16s ease-out; }
+.month-picker-year { display:flex;align-items:center;justify-content:space-between;margin-bottom:10px; }
+.month-picker-year>strong { font-size:16px;font-variant-numeric:tabular-nums; }
+.month-picker-year>.button { width:40px;min-height:40px; }
+.month-picker-grid { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px; }
+.month-picker-grid>.button { padding:8px 4px;min-height:44px;min-width:0;font-size:12px;font-weight:500;border:1px solid transparent;border-radius:10px; }
+.month-picker-grid>.button[aria-pressed=true] { color:var(--accent);background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,var(--border));font-weight:650; }
+.month-picker-grid>.is-current-month:not([aria-pressed=true]) { box-shadow:inset 0 0 0 1px var(--border); }
+.month-picker-today.button { width:100%;margin-top:10px;font-size:12px;min-height:40px; }
+.calendar-grid-navigation { display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 12px; }
+.calendar-grid-navigation>.button { flex:0 0 42px;width:42px;min-height:42px; }
+.calendar-grid-navigation .calendar-period-label { font-size:15px;line-height:1.4;text-align:center;margin:0;text-transform:capitalize; }
+.outlook-actual-line { display:flex;justify-content:space-between;align-items:center;gap:12px;margin:15px 0 0;padding-top:13px;border-top:1px solid var(--border);font-size:12px;color:var(--muted-foreground); }
+.outlook-actual-line>strong { color:var(--foreground);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap; }
+.recurring-rules-list { align-items:start;gap:14px; }
+.recurring-rules-list>.recurring-rule { padding:18px;gap:11px!important;border-radius:18px; }
+.recurring-rule .recurring-rule-heading { flex-wrap:nowrap;align-items:flex-start;gap:10px; }
+.recurring-rule .recurring-rule-icon { width:30px;height:30px;border-radius:9px;flex:0 0 30px; }
+.recurring-rule-icon>svg { width:16px;height:16px; }
+.recurring-rule .recurring-rule-heading>div { min-width:0;flex:1; }
+.recurring-rule .recurring-rule-heading h2 { font-size:14px;line-height:1.5;overflow-wrap:anywhere; }
+.recurring-rule .recurring-rule-heading p { font-size:10px;line-height:1.5;margin-top:3px; }
+.recurring-rule .recurring-rule-amount { margin:0;font-size:16px;line-height:1.5;flex-shrink:0;white-space:nowrap; }
+.recurring-rule .recurring-rule-meta { font-size:10px;gap:8px;flex-wrap:wrap; }
+.recurring-rule-meta .soft-badge { font-size:10px;padding:4px 7px; }
+.recurring-payment-progress { display:grid;gap:6px; }
+.recurring-payment-progress>div:first-child { display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;line-height:1.6; }
+.recurring-payment-progress>div:first-child>span { color:var(--muted-foreground); }
+.recurring-payment-progress b { font-size:11px;font-weight:600;font-variant-numeric:tabular-nums; }
+.recurring-payment-progress .balance-progress-track { height:6px; }
+.recurring-payment-progress>small { font-size:9px;line-height:1.5;color:var(--muted-foreground); }
+.recurring-card-footer { display:flex;justify-content:space-between;align-items:center;gap:8px;padding-top:9px;border-top:1px solid var(--border); }
+.recurring-card-footer>.button { font-size:11px;min-height:36px;padding:7px 11px; }
+.recurring-card-footer>.button-icon { margin-left:auto;width:36px;padding:0; }
+.recurring-payment-hint { font-size:10px;color:var(--muted-foreground); }
+.recurring-management { display:grid;gap:9px; }
+.recurring-management>.button { justify-content:flex-start;font-size:13px; }
+.recurring-management>.delete-action { margin-top:5px;justify-self:end; }
+.recurring-month-panel .panel-heading p { max-width:450px;font-size:11px; }
+.recurring-month-panel .month-plan-mark { display:none; }
+.recurring-month-panel .month-planned-row { padding:10px 0;gap:10px; }
+.recurring-month-panel .month-planned-icon { width:30px;height:30px;border-radius:10px; }
+.recurring-month-panel .month-planned-row strong { font-size:12px; }
+.recurring-month-panel .month-planned-row b { font-size:14px; }
+.recurring-month-panel .month-planned-row small { font-size:10px; }
+@keyframes month-picker-enter { from {opacity:0;transform:translateY(-4px);} to {opacity:1;transform:translateY(0);} }
+@media(max-width:600px) { .money-month-picker>.month-picker-trigger.button,.statistics-month-picker>.month-picker-trigger.button { min-width:0;padding:8px;gap:7px;font-size:12px; }.recurring-rules-list>.recurring-rule { padding:15px; }.recurring-rule .recurring-rule-heading { flex-wrap:nowrap; }.recurring-rule .recurring-rule-amount { margin:0;font-size:15px; }.recurring-rule .recurring-rule-heading p { font-size:9px; }.recurring-rule .recurring-rule-icon { display:none; }.month-picker-trigger.button { font-size:12px; } }
+@media(prefers-reduced-motion:reduce) { .month-picker-popover { animation:none; } }

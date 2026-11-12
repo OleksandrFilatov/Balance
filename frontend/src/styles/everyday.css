@@ -1,0 +1,1208 @@
+:root {
+  --background: #f7f7f8;
+  --foreground: #292a30;
+  --muted: #f0f1f3;
+  --muted-foreground: #71717b;
+  --border: #e5e5ea;
+  --sidebar: #fff;
+  --green: #43678d;
+  --green-soft: #f0f2f6;
+}
+.dark {
+  --background: #17181c;
+  --foreground: #eeeef2;
+  --card: #222328;
+  --muted: #2c2d34;
+  --muted-foreground: #a2a3ae;
+  --border: #363740;
+  --sidebar: #1c1d22;
+  --green: #a6bbd5;
+  --green-soft: #292e38;
+}
+.goal-actions > .button:not(.button-icon) {
+  width: auto;
+  min-width: max-content;
+  flex-shrink: 0;
+}
+.icon-link {
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  flex-shrink: 0;
+}
+.everyday-shell {
+  display: grid;
+  grid-template-columns: 228px minmax(0, 1fr);
+  min-height: 100dvh;
+}
+.everyday-shell .page-content:focus {
+  outline: none;
+}
+.everyday-shell .nav-item.active {
+  background: var(--muted);
+  color: var(--foreground);
+}
+.dialog-overlay {
+  background: #14151966;
+}
+.dialog-content {
+  box-shadow: 0 24px 100px #14151930;
+}
+.everyday-shell .sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 228px;
+  padding: 30px 18px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  background: var(--sidebar);
+}
+.everyday-shell .brand {
+  font-size: 25px;
+  letter-spacing: -1.1px;
+}
+.everyday-shell .desktop-nav {
+  margin-top: 48px;
+  gap: 8px;
+}
+.everyday-shell .nav-item {
+  font-size: 14px;
+  min-height: 48px;
+  padding: 12px 13px;
+  border-radius: 12px;
+  gap: 12px;
+}
+.everyday-shell .settings-link {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  color: var(--muted-foreground);
+  font-size: 14px;
+}
+.everyday-shell .app-body {
+  grid-column: 2;
+  margin: 0;
+  min-width: 0;
+  width: 100%;
+}
+.everyday-shell .topbar {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 36px;
+  border-bottom: 1px solid var(--border);
+  background: var(--background);
+}
+.desktop-section {
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+.everyday-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  color: var(--muted-foreground);
+}
+.icon-link:hover {
+  background: var(--muted);
+}
+.everyday-shell .page-content {
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 32px 36px 60px;
+}
+.everyday-shell .page-heading {
+  align-items: center;
+  margin: 0 0 26px;
+  gap: 20px;
+}
+.everyday-shell .page-heading h1 {
+  font-size: clamp(26px, 3vw, 36px);
+  letter-spacing: -1.3px;
+  line-height: 1.18;
+}
+.everyday-shell .page-heading p {
+  font-size: 14px;
+  margin-top: 9px;
+  line-height: 1.5;
+  max-width: 620px;
+}
+.everyday-shell .page-heading > .button {
+  font-size: 14px;
+  max-width: none;
+  white-space: nowrap;
+}
+.everyday-shell h2 {
+  font-size: 19px;
+  line-height: 1.35;
+  letter-spacing: -0.35px;
+}
+.everyday-shell h3 {
+  font-size: 16px;
+}
+.everyday-shell .button {
+  min-height: 44px;
+  font-size: 14px;
+}
+.everyday-shell .button-icon {
+  min-width: 44px;
+  width: 44px;
+}
+.everyday-shell .button-small {
+  min-height: 40px;
+  font-size: 13px;
+}
+.everyday-shell .input {
+  font-size: 16px;
+  min-height: 46px;
+}
+.everyday-shell .field-label {
+  font-size: 13px;
+}
+.everyday-shell .form-note,
+.everyday-shell .page-note {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.everyday-shell .text-link {
+  font-size: 13px;
+}
+.everyday-shell .panel-heading {
+  gap: 16px;
+  margin: 0;
+  align-items: center;
+}
+.everyday-shell .panel-heading p {
+  font-size: 13px;
+}
+.everyday-shell [data-slot="card"] {
+  box-shadow: none;
+  gap: 18px;
+}
+.daily-panel {
+  padding: 24px;
+  margin: 24px 0;
+  min-width: 0;
+  border-radius: 18px;
+}
+.daily-total {
+  padding: 26px;
+}
+.home-sections {
+  align-items: start;
+}
+.quiet-empty {
+  font-size: 14px;
+  color: var(--muted-foreground);
+  line-height: 1.65;
+  padding: 12px 0;
+}
+.back-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-bottom: 14px;
+}
+.home-money-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: 18px;
+}
+.home-balance {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  padding: 26px;
+  background: var(--green-soft);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+.daily-total > span,
+.home-balance > span,
+.home-small-card > span,
+.home-month span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--muted-foreground);
+}
+.daily-total > strong {
+  font-size: clamp(30px, 4vw, 42px);
+  letter-spacing: -1.1px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.home-balance > small {
+  font-size: 13px;
+  color: var(--green);
+}
+.home-month {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 24px;
+}
+.home-month > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.home-month strong {
+  font-size: 23px;
+  letter-spacing: -0.5px;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+.home-small-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin: 18px 0 28px;
+}
+.home-small-card {
+  padding: 20px 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.home-small-card strong {
+  font-size: 25px;
+  letter-spacing: -0.6px;
+  overflow-wrap: anywhere;
+}
+.home-currency {
+  width: 110px;
+  margin: 0 0 18px auto;
+}
+.daily-toolbar,
+.money-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 0 0 24px;
+}
+.daily-toolbar > .input {
+  max-width: 210px;
+}
+.daily-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.daily-metrics.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.daily-metric,
+.daily-metrics > .daily-total {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+.daily-metric span {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+}
+.daily-metric strong {
+  font-size: clamp(22px, 2vw, 28px);
+  letter-spacing: -0.7px;
+  overflow-wrap: anywhere;
+}
+.daily-metrics > .daily-total > strong {
+  font-size: clamp(22px, 2vw, 28px);
+}
+.daily-details {
+  margin: 24px 0;
+}
+.daily-details > summary {
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  min-height: 44px;
+  padding: 12px 0;
+}
+.daily-details > p {
+  font-size: 14px;
+  color: var(--muted-foreground);
+  line-height: 1.65;
+  margin: 10px 0;
+}
+.compact-details > summary {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted-foreground);
+}
+.money-list {
+  min-width: 0;
+}
+.money-entry {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground);
+  padding: 18px 0;
+  text-align: left;
+  min-height: 72px;
+  cursor: pointer;
+}
+.money-entry:last-child {
+  border-bottom: 0;
+}
+.entry-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--orange-soft);
+  color: var(--accent);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.entry-icon.income {
+  background: var(--green-soft);
+  color: var(--green);
+}
+.entry-description {
+  flex: 1;
+  min-width: 0;
+}
+.entry-description strong {
+  display: block;
+  font-weight: 550;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.entry-description small {
+  display: block;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+  margin-top: 5px;
+}
+.entry-value {
+  font-weight: 600;
+  font-size: 16px;
+  white-space: nowrap;
+}
+.money-entry > svg {
+  color: var(--muted-foreground);
+  flex-shrink: 0;
+}
+.home-sections {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 16px;
+  margin: 24px 0 0;
+}
+.home-section {
+  width: 100%;
+  padding: 0;
+  min-width: 0;
+}
+.home-section h2 {
+  font-size: 18px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.home-section {
+  background: transparent;
+  border: 0;
+}
+.home-category-button {
+  width: 100%;
+  min-height: 160px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20px;
+  align-content: start;
+  gap: 12px 8px;
+  padding: 20px;
+  text-align: left;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  color: var(--foreground);
+  background: var(--card);
+  box-shadow: 0 2px 6px #14151903;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
+}
+.home-category-button:hover {
+  border-color: var(--accent);
+}
+.home-category-button.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.home-category-icon {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  grid-column: 1;
+  grid-row: 1;
+  border-radius: 13px;
+  background: var(--muted);
+  color: var(--muted-foreground);
+}
+.selected .home-category-icon {
+  background: var(--orange-soft);
+  color: var(--accent);
+}
+.home-category-name {
+  grid-column: 1 / -1;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.home-category-button .section-spent {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 19px;
+  color: var(--foreground);
+  font-weight: 600;
+  white-space: normal;
+}
+.home-category-button .section-spent small {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  font-weight: 400;
+}
+.home-category-arrow {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  color: var(--muted-foreground);
+}
+.selected .home-category-arrow {
+  transform: rotate(90deg);
+  color: var(--accent);
+}
+.home-category-detail {
+  margin: 16px 0 24px;
+  scroll-margin-bottom: 100px;
+}
+.home-category-detail > .panel-heading {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 12px;
+}
+.home-category-detail > .house-bill {
+  border-top: 0;
+}
+.home-category-detail > .house-bill + .house-bill {
+  border-top: 1px solid var(--border);
+}
+.category-empty {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 18px;
+}
+.bill-actions {
+  gap: 8px;
+}
+.bill-actions > .button-secondary {
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  border-radius: 10px;
+  padding: 9px 13px;
+}
+.bill-actions > .button-secondary:hover {
+  background: var(--muted);
+}
+.bill-actions > .button svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  stroke-width: 1.7;
+}
+.home-section > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 20px;
+  gap: 16px;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+  min-height: 44px;
+}
+.home-section > summary::-webkit-details-marker {
+  display: none;
+}
+.home-section > summary:after {
+  content: "+";
+  color: var(--muted-foreground);
+  font-size: 20px;
+}
+.home-section[open] > summary:after {
+  content: "−";
+}
+.home-section[open] > summary {
+  margin-bottom: 8px;
+}
+.home-section .house-bill {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 24px;
+  row-gap: 10px;
+  padding: 18px 0 6px;
+}
+.home-section .bill-heading,
+.home-section .bill-status {
+  grid-column: 1;
+}
+.home-section .bill-status {
+  margin: 0;
+}
+.home-section .bill-actions {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  justify-content: flex-end;
+}
+.home-section .bill-actions:empty {
+  display: none;
+}
+.category-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+.category-toolbar,
+.category-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.category-toolbar {
+  justify-content: space-between;
+}
+.category-toolbar .segmented {
+  flex: 1;
+  min-width: 180px;
+  max-width: 300px;
+}
+.category-list {
+  border-top: 1px solid var(--border);
+}
+.category-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.category-row > div:first-child {
+  min-width: 0;
+}
+.category-row strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.category-row small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.category-row-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 4px;
+}
+.settings-categories > summary {
+  font-size: 18px;
+  font-weight: 600;
+  min-height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  list-style: none;
+}
+.settings-categories > summary::after {
+  content: "+";
+  margin-left: auto;
+  color: var(--muted-foreground);
+}
+.settings-categories[open] > summary::after {
+  content: "−";
+}
+.settings-categories[open] > summary {
+  margin-bottom: 20px;
+}
+.settings-categories > summary::-webkit-details-marker {
+  display: none;
+}
+.daily-toolbar input,
+.money-actions input {
+  min-width: 0;
+  max-width: 100%;
+}
+.dialog-content .category-manager {
+  margin-top: 8px;
+}
+@media (max-width: 800px) {
+  .home-section {
+    padding: 12px 16px;
+  }
+  .home-section > summary {
+    gap: 10px;
+    grid-template-columns: minmax(0, 1fr) auto 16px;
+  }
+  .everyday-shell .home-section > summary h2 {
+    font-size: 16px;
+    letter-spacing: 0;
+  }
+  .home-section .section-spent {
+    font-size: 11px;
+  }
+  .home-section .house-bill {
+    display: block;
+    padding-top: 16px;
+  }
+  .home-section .bill-status {
+    margin: 10px 0;
+  }
+  .home-section .bill-actions {
+    justify-content: flex-start;
+  }
+  .category-toolbar > .button {
+    flex-grow: 1;
+  }
+  .everyday-shell .page-heading {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .everyday-shell .page-heading > .button {
+    align-self: flex-start;
+    max-width: none;
+    white-space: nowrap;
+  }
+}
+@media (max-width: 480px) {
+  .home-section > summary {
+    grid-template-columns: minmax(0, 1fr) 20px;
+    row-gap: 4px;
+  }
+  .home-section > summary h2 {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .home-section > summary .section-spent {
+    grid-column: 1;
+    grid-row: 2;
+    white-space: normal;
+  }
+  .home-section > summary:after {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    justify-self: end;
+  }
+}
+.debt-simple-total {
+  padding: 26px;
+  margin-bottom: 24px;
+}
+.dialog-content .input {
+  font-size: 16px;
+  min-height: 46px;
+}
+.dialog-content .button {
+  min-height: 44px;
+  font-size: 14px;
+}
+.dialog-content .field-label {
+  font-size: 13px;
+}
+.dialog-content .form-note {
+  font-size: 13px;
+  line-height: 1.6;
+}
+.dialog-content .dialog-footer {
+  position: sticky;
+  bottom: -24px;
+  background: var(--card);
+  padding: 14px 0;
+  margin-top: 8px;
+}
+.login-page {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  min-height: 100dvh;
+  padding: 32px 20px;
+}
+.login-decoration {
+  display: none;
+}
+.login-card {
+  width: 100%;
+  max-width: 430px;
+  padding: 32px 0;
+}
+.login-intro {
+  margin-top: 36px;
+}
+.login-intro h1 {
+  font-size: 36px;
+  line-height: 1.12;
+}
+.login-intro p {
+  font-size: 15px;
+}
+.login-page .input {
+  font-size: 16px;
+  min-height: 48px;
+}
+.section-spent {
+  font-size: 12px;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+.section-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 10px;
+}
+.house-bill {
+  padding: 18px 0;
+  border-top: 1px solid var(--border);
+}
+.daily-panel > .house-bill:first-of-type {
+  border-top: 0;
+}
+.bill-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+.bill-heading > div {
+  min-width: 0;
+}
+.bill-heading strong {
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+.bill-heading p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+  margin-top: 5px;
+}
+.bill-heading > b {
+  font-size: 17px;
+  white-space: nowrap;
+}
+.bill-status {
+  display: flex;
+  gap: 8px 12px;
+  flex-wrap: wrap;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin: 10px 0;
+}
+.bill-status span {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.warning-text {
+  color: var(--danger);
+  font-size: 13px;
+}
+.success-text {
+  color: var(--green);
+}
+.bill-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.bill-pay-amount {
+  font-size: 32px;
+  letter-spacing: -1px;
+}
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.settings-grid > .daily-panel {
+  margin: 0;
+}
+.settings-nav a {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+.settings-nav a:last-child {
+  border: 0;
+}
+.settings-nav a > span {
+  flex: 1;
+  min-width: 0;
+}
+.settings-nav strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 550;
+}
+.settings-nav small {
+  display: block;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-top: 5px;
+  line-height: 1.5;
+}
+.settings-profile {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.settings-profile p {
+  font-size: 13px;
+  color: var(--muted-foreground);
+  margin-top: 6px;
+}
+.stats-charts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.daily-chart {
+  height: 270px;
+  min-width: 0;
+}
+.stats-scope {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin: 24px 0;
+  color: var(--muted-foreground);
+  font-size: 14px;
+}
+.stats-scope b {
+  color: var(--foreground);
+  margin-left: 8px;
+}
+.everyday-shell .mobile-nav,
+.quick-expense-fab {
+  display: none;
+}
+.everyday-shell .transaction-table .amount {
+  font-size: 15px;
+}
+.everyday-shell .transaction-table th {
+  font-size: 12px;
+}
+.everyday-shell .account-card-footer a {
+  font-size: 13px;
+}
+.everyday-shell .form-grid {
+  gap: 16px;
+}
+@media (max-width: 1000px) {
+  .daily-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .everyday-shell .sidebar {
+    width: 210px;
+  }
+  .everyday-shell {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+  .everyday-shell .page-content {
+    padding: 28px 24px 60px;
+  }
+  .home-money-grid {
+    grid-template-columns: 1fr;
+  }
+  .home-month {
+    flex-direction: row;
+  }
+  .home-month > div {
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+  }
+}
+@media (max-width: 800px) {
+  .everyday-shell {
+    display: block;
+  }
+  .everyday-shell .sidebar {
+    display: none;
+  }
+  .everyday-shell .app-body {
+    width: 100%;
+  }
+  .everyday-shell .page-content {
+    padding: 24px 16px 160px;
+  }
+  .everyday-shell .topbar {
+    height: 66px;
+    padding: 0 16px;
+  }
+  .everyday-shell .mobile-brand {
+    display: flex;
+  }
+  .desktop-section,
+  .desktop-quick-expense {
+    display: none;
+  }
+  .everyday-header-actions {
+    gap: 0;
+  }
+  .everyday-shell .mobile-nav {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    position: fixed;
+    inset: auto 0 0;
+    width: 100%;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+    gap: 0;
+    border-top: 1px solid var(--border);
+    border-radius: 0;
+    background: var(--card);
+    overflow: hidden;
+    z-index: 40;
+  }
+  .everyday-shell .mobile-nav > a {
+    width: auto;
+    min-width: 0;
+    min-height: 54px;
+    padding: 7px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 11px;
+    line-height: 1.2;
+    border-radius: 10px;
+  }
+  .everyday-shell .mobile-nav > a.active {
+    background: var(--orange-soft);
+    color: var(--accent);
+  }
+  .quick-expense-fab {
+    display: flex;
+    position: fixed;
+    right: 18px;
+    bottom: calc(84px + env(safe-area-inset-bottom));
+    border-radius: 30px;
+    padding: 13px 19px;
+    box-shadow: 0 4px 20px #0002;
+    z-index: 35;
+    min-height: 48px;
+  }
+  .home-money-grid {
+    gap: 14px;
+  }
+  .home-balance {
+    padding: 22px;
+    gap: 13px;
+  }
+  .home-month {
+    padding: 20px;
+    gap: 15px;
+  }
+  .home-month span {
+    font-size: 12px;
+  }
+  .home-month strong {
+    font-size: 23px;
+  }
+  .home-small-grid {
+    gap: 12px;
+    margin: 14px 0 24px;
+  }
+  .home-small-card {
+    padding: 18px 15px;
+  }
+  .home-small-card > span {
+    font-size: 12px;
+    line-height: 1.5;
+    align-items: flex-start;
+  }
+  .home-small-card strong {
+    font-size: 24px;
+  }
+  .daily-panel {
+    padding: 20px;
+    margin: 20px 0;
+  }
+  .everyday-shell .page-heading {
+    align-items: flex-start;
+  }
+  .everyday-shell .page-heading > .button {
+    font-size: 13px;
+    padding: 10px 12px;
+    white-space: normal;
+    max-width: 150px;
+  }
+  .everyday-shell .page-heading h1 {
+    font-size: 28px;
+  }
+  .everyday-shell .page-heading p {
+    font-size: 14px;
+  }
+  .everyday-shell .panel-heading h2 {
+    font-size: 18px;
+  }
+  .home-sections,
+  .settings-grid,
+  .stats-charts {
+    grid-template-columns: 1fr;
+  }
+  .daily-metrics {
+    gap: 12px;
+  }
+  .daily-metric,
+  .daily-metrics > .daily-total {
+    padding: 18px 15px;
+  }
+  .daily-metrics.three {
+    grid-template-columns: 1fr;
+  }
+  .money-actions > .button {
+    flex: 1;
+  }
+  .money-actions > .button-ghost {
+    flex-basis: 100%;
+    font-size: 13px;
+  }
+  .entry-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+  }
+  .money-entry {
+    gap: 10px;
+    padding: 16px 0;
+  }
+  .entry-value {
+    font-size: 14px;
+  }
+  .entry-description strong {
+    font-size: 14px;
+  }
+  .money-entry > svg {
+    display: none;
+  }
+  .everyday-shell .transaction-table .amount {
+    font-size: 14px;
+  }
+  .everyday-shell .dialog-content {
+    width: calc(100vw - 20px);
+    max-height: calc(100dvh - 24px);
+    padding: 24px 20px;
+  }
+  .everyday-shell .dialog-footer {
+    position: sticky;
+    bottom: -24px;
+    background: var(--card);
+    padding: 16px 0;
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .home-sections {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 800px) {
+  .home-sections {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .home-sections > .home-section {
+    padding: 0;
+  }
+  .home-category-button {
+    min-height: 156px;
+    padding: 16px;
+    gap: 10px 6px;
+    border-radius: 16px;
+  }
+  .home-category-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+  }
+  .home-category-button .section-spent {
+    font-size: 18px;
+    overflow-wrap: anywhere;
+    min-width: 0;
+  }
+  .home-category-detail {
+    scroll-margin-bottom: 150px;
+  }
+  .bill-actions > .button-primary {
+    flex-basis: 100%;
+  }
+  .bill-actions > .button-secondary {
+    flex: 1;
+  }
+}
+@media (max-width: 380px) {
+  .home-category-button {
+    padding: 14px;
+  }
+  .home-category-name {
+    font-size: 14px;
+  }
+}

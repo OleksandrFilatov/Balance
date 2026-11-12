@@ -1,0 +1,21 @@
+.batrachka-page { min-width: 0; }
+.batrachka-stage {
+  overflow: hidden;
+  border-radius: 24px;
+  background: #080908;
+  box-shadow: 0 12px 36px #00000012;
+}
+.batrachka-stage iframe {
+  display: block;
+  width: 100%;
+  height: clamp(440px, 70dvh, 820px);
+  border: 0;
+}
+.batrachka-caption { margin: 14px 4px 0; font-size: 13px; color: var(--muted-foreground); line-height: 1.6; }
+@media (max-width: 600px) {
+  .batrachka-stage { border-radius: 18px; }
+  .batrachka-stage iframe { height: clamp(420px, 65dvh, 680px); }
+}
+
+.batrachka-work-summary { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin:0 0 16px; font-size:13px; color:var(--muted-foreground); }
+.batrachka-work-summary a { color:var(--primary); text-underline-offset:4px; }

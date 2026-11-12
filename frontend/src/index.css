@@ -1,0 +1,17 @@
+﻿@import "./styles/app.css";
+@import "./styles/savings.css";
+@import "./styles/everyday.css";
+@import "./styles/studio.css";
+@import "./styles/progress.css";
+@import "./styles/refinements.css";
+@import "./styles/login.css";
+@import "./styles/savings-adviser.css";
+@import "./styles/money-month.css";
+@import "./styles/daily-polish.css";
+@import "./styles/personal-payments.css";
+@import "./styles/month-picker.css";
+@import "./styles/everyday-compact.css";
+@import "./styles/language.css";
+
+.household-income-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem; }
+@media(max-width:600px) { .household-income-grid { grid-template-columns:1fr; } }
