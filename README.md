@@ -1,117 +1,117 @@
 ﻿# Balance
 
-**Личный проект [OleksandrFilatov](https://github.com/OleksandrFilatov): веб-приложение для личных финансов, домашних расходов и накоплений.**
+**A personal project by [OleksandrFilatov](https://github.com/OleksandrFilatov): a self-hosted web app for personal finances, shared household expenses, and savings goals.**
 
-Balance помогает видеть текущие деньги, предстоящие обязательства и сумму, которая останется после платежей. Приложение работает с собственной базой PostgreSQL и предназначено для самостоятельного размещения.
+Balance brings together your current money, upcoming commitments, and projected balance after payments. It uses your own PostgreSQL database and is designed for self-hosting.
 
-> **Как создавался проект:** я определял функции, сценарии использования и внешний вид, проверял результат на практике и уточнял требования. Код приложения создавался и дорабатывался через **OpenAI Codex**, а не писался мной вручную построчно. Это мой личный проект, которым я управлял через запросы и обратную связь.
+> **How this project was built:** I defined the features, user flows, and visual direction, tested the results through everyday use, and refined the requirements. The application code was generated and iteratively developed using **OpenAI Codex**, rather than written by me manually, line by line. This is my personal project, which I directed through prompts and feedback.
 
-## Что умеет приложение
+## Features
 
-- **Личные финансы:** счета, доходы, расходы, история операций и баланс. Просмотр прошлых месяцев и прогноз будущих платежей.
-- **Совместные расходы:** постоянные домашние платежи распределяются пропорционально доходам двух участников; дополнительные покупки — 50/50. Имена участников можно выбрать самостоятельно.
-- **Учёт по месяцам:** зарплаты и согласованные суммы относятся к конкретному месяцу. Неоплаченные домашние расходы сохраняются; можно оплатить часть или перенести остаток на следующий месяц.
-- **Долги и рассрочки:** график взносов, прогресс погашения, ближайшая дата оплаты, история и ручное управление. Поддерживается автоматическая запись платежей по расписанию при работающем приложении.
-- **Накопления:** финансовые цели, резервирование существующих денег, прогресс и калькулятор. На карточке цели показано, сколько откладывать в месяц до выбранной даты с учётом уже накопленного.
-- **Календарь и статистика:** предстоящие платежи, личная доля коммуналки, долги и графики доходов и расходов.
-- **Календарь смен:** часы работы, неоплачиваемая пауза, ставка и оценка заработка. Для поддерживаемых условий есть ориентировочный расчёт немецкой зарплаты за 2026 год.
-- **Интерфейс:** русский, немецкий и английский, определение языка устройства, запоминание выбора, светлая и тёмная темы, адаптивная вёрстка.
-- **Дополнительный раздел «Батрачка»:** интерактивная сцена со счётчиком отмеченных рабочих дней.
+- **Personal finances:** accounts, income, expenses, transaction history, and balances. Review past months and forecast upcoming payments.
+- **Shared household expenses:** split fixed household bills in proportion to two participants' incomes, and split additional purchases 50/50. Participant names are customisable.
+- **Monthly planning:** salaries and agreed amounts belong to specific months. Unpaid household bills carry forward, with support for partial payments and deferring the remaining amount to the following month.
+- **Debts and instalments:** payment schedules, repayment progress, upcoming due dates, history, and manual management. Scheduled payments can be recorded automatically while the server is running.
+- **Savings goals:** reserve existing money for goals, track progress, and calculate contributions. Each goal card shows how much to save per month to reach its target date, accounting for money already saved.
+- **Calendar and statistics:** upcoming payments, your personal share of household bills, debt repayments, and income and expense charts.
+- **Work-shift calendar:** track working hours, unpaid breaks, hourly rates, and estimated earnings. An approximate German net salary calculation is available for supported 2026 employment conditions.
+- **Interface:** English, German, and Russian; automatic device-language detection; a remembered language preference; light and dark themes; and a responsive layout.
+- **Work wall:** an interactive scene with tally marks linked to completed workdays.
 
-Расчёты и прогнозы помогают планировать деньги. Приложение **не подключается к банку и не отправляет банковские переводы**: подтверждение или автоматизация создают записи в учёте Balance.
+Forecasts and allocations help you plan your money. Balance **does not connect to your bank or initiate bank transfers**: confirming or automating a payment creates a bookkeeping entry within the app.
 
-## Технологии
+## Tech stack
 
-| Область | Стек |
+| Area | Technologies |
 |---|---|
 | Backend | Java 25, Spring Boot 4, Spring MVC / REST API |
-| Данные | PostgreSQL 18, Spring Data JPA / Hibernate, JDBC, Flyway |
-| Доступ | Spring Security, BCrypt, защита CSRF |
+| Data | PostgreSQL 18, Spring Data JPA / Hibernate, JDBC, Flyway |
+| Authentication and security | Spring Security, BCrypt, CSRF protection |
 | Frontend | React 19, TypeScript, Vite, React Router |
-| Запросы и состояние сервера | TanStack Query |
-| Интерфейс | Tailwind CSS, собственный CSS, Radix UI, Lucide |
-| Графики | Recharts |
-| Сборка и тесты | Maven Wrapper, npm, JUnit, Spring Boot Test, embedded PostgreSQL, Playwright |
-| Разработка | OpenAI Codex, итерации через требования и обратную связь |
+| Server state and data fetching | TanStack Query |
+| UI | Tailwind CSS, custom CSS, Radix UI, Lucide |
+| Charts | Recharts |
+| Build and testing | Maven Wrapper, npm, JUnit, Spring Boot Test, embedded PostgreSQL, Playwright |
+| Development process | OpenAI Codex, guided by requirements and iterative feedback |
 
-## Запуск
+## Getting started
 
-Потребуются **JDK 25, PostgreSQL 18 и Node.js 24 с npm**. PostgreSQL устанавливается отдельно. Команды ниже выполняются из корня проекта, если не указано иное.
+You need **JDK 25, PostgreSQL 18, and Node.js 24 with npm**. Install PostgreSQL separately. Run the commands from the project root unless stated otherwise.
 
-1. Создайте отдельную базу:
-
-   ```sh
-   psql -U postgres -f scripts/setup-db.sql
-   ```
-
-   Скрипт запросит пароль для роли приложения. Используйте собственный пароль.
-
-2. Задайте переменные окружения:
-
-   ```text
-   DB_URL=jdbc:postgresql://localhost:5432/balance_db
-   DB_USERNAME=balance_app
-   DB_PASSWORD=<ваш пароль базы>
-   BALANCE_LOCAL_USERNAME=<ваше имя для первого входа>
-   BALANCE_LOCAL_PASSWORD=<ваш надёжный пароль для первого входа>
-   ```
-
-   Файл `.env.example` служит образцом; `.env` автоматически не загружается. Пароль первого входа должен содержать не менее 16 символов и не более 72 байт UTF-8. В репозитории нет общего рабочего пароля.
-
-3. Соберите интерфейс:
-
-   ```sh
-   npm --prefix frontend ci
-   npm --prefix frontend run build
-   ```
-
-4. Соберите приложение из каталога `backend`:
-
-   ```sh
-   ./mvnw -Pfrontend package
-   ```
-
-   В Windows используйте `mvnw.cmd -Pfrontend package`.
-
-5. Из корня проекта запустите сервер:
-
-   ```sh
-   java -jar backend/target/balance-0.0.1-SNAPSHOT.jar --spring.profiles.active=local-finance
-   ```
-
-6. Откройте **http://127.0.0.1:8080**, войдите с заданными учётными данными и создайте постоянный аккаунт владельца по предложению приложения.
-
-Новая установка содержит стандартные категории, но не содержит личных финансовых записей или имён участников. Имена настраиваются в **«Коммуналка и дом → Участники»**. Язык можно изменить на экране входа и в шапке.
-
-## Проверки
+### 1. Create a database
 
 ```sh
-# Интерфейс: TypeScript и production-сборка
+psql -U postgres -f scripts/setup-db.sql
+```
+
+The script prompts for the application database role's password. Choose your own password.
+
+### 2. Set environment variables
+
+```text
+DB_URL=jdbc:postgresql://localhost:5432/balance_db
+DB_USERNAME=balance_app
+DB_PASSWORD=<your database password>
+BALANCE_LOCAL_USERNAME=<your initial sign-in username>
+BALANCE_LOCAL_PASSWORD=<your strong initial sign-in password>
+```
+
+Use `.env.example` as a reference; `.env` files are not loaded automatically. The initial sign-in password must contain at least 16 characters and no more than 72 UTF-8 bytes. There is no shared production password in this repository.
+
+### 3. Build the frontend
+
+```sh
+npm --prefix frontend ci
+npm --prefix frontend run build
+```
+
+### 4. Build the application
+
+From the `backend` directory:
+
+```sh
+./mvnw -Pfrontend package
+```
+
+On Windows, use `mvnw.cmd -Pfrontend package`.
+
+### 5. Start the server
+
+From the project root:
+
+```sh
+java -jar backend/target/balance-0.0.1-SNAPSHOT.jar --spring.profiles.active=local-finance
+```
+
+### 6. Open Balance
+
+Visit **http://127.0.0.1:8080**, sign in with the credentials you configured, and create your permanent owner account when prompted.
+
+A fresh installation includes standard categories but no personal financial records or household member names. Set participant names under **Bills & household > Members**. Change the language on the sign-in screen or in the app header.
+
+## Testing
+
+```sh
+# Frontend: TypeScript checks and production build
 npm --prefix frontend run build
 
-# Backend; команда для Windows из корня проекта
+# Backend on Windows, from the project root
 backend/mvnw.cmd -f backend/pom.xml test
 
-# macOS / Linux
+# Backend on macOS / Linux
 (cd backend && ./mvnw test)
 ```
 
-Браузерные тесты требуют отдельного `UiTestServer` с флагом `-Dbalance.ui-test.enabled=true`, тестовыми классами и зависимостями в classpath. Они проверяют маркер изолированной базы. Тестовый аккаунт — синтетический; его данные указаны в сценариях. Не запускайте эти сценарии на своей рабочей базе. В публичной версии оставлены тесты с синтетическими данными; приватные исторические регрессионные примеры в неё не включены.
+Browser tests require a separate `UiTestServer` started with `-Dbalance.ui-test.enabled=true`, with test classes and dependencies on the classpath. They check for an isolated database marker. Test credentials are synthetic and specified in the scenarios. Never run these tests against your personal database. The public source includes tests using synthetic data; private historical regression fixtures are excluded.
 
-## Область применения
+## Scope and limitations
 
-- Это самостоятельно размещаемое приложение с одним аккаунтом владельца на установку. Участники домашних расходов — отображаемые стороны расчёта, а не отдельные аккаунты с разграниченными правами.
-- Планировщики работают, пока запущен сервер. Они не являются банковским автоплатежом.
-- Оценка зарплаты ограничена поддерживаемыми правилами обычной занятости в Германии за 2026 год, налоговый класс I, без церковного налога. Это не расчёт для всех налоговых лет и форм занятости.
-- Перед обновлением сохраняйте резервную копию PostgreSQL. Не редактируйте уже применённые миграции и не удаляйте каталоги с данными.
-- По умолчанию сервер слушает только локальный адрес. Для доступа с других устройств требуется отдельно настроенный защищённый доступ.
+- Each installation has one owner account. Household members are participants in expense calculations, not separate authenticated accounts with individual permissions.
+- Schedulers require the server to be running. They record bookkeeping entries and are not bank standing orders.
+- The salary estimator covers supported standard-employment conditions in Germany for 2026, tax class I, without church tax. It does not cover every tax year or employment arrangement.
+- Back up PostgreSQL before updating. Do not edit applied migrations or delete data directories.
+- By default, the server listens only on the local address. Access from other devices requires separately configured secure connectivity.
 
-## Данные и публикация
+## Privacy
 
-Публичные исходники подготовлены отдельно от рабочей установки. В репозитории нет базы владельца, личных отчётов, паролей, сертификатов, логов или старой локальной истории Git. Пароли для примеров тестирования не являются учётными данными рабочей установки.
-
-## English summary
-
-**Balance is my personal, self-hosted finance and household budgeting project.** It tracks accounts, income, expenses, shared bills, instalments and savings goals, with payment calendars, charts and a work-shift planner. The interface supports Russian, German and English.
-
-**The application was developed through OpenAI Codex rather than hand-coded line by line.** I directed its features and design through requirements, practical use and iterative feedback. The stack is Java / Spring Boot, React / TypeScript and PostgreSQL. A fresh installation includes no personal ledger or household member names. Balance records bookkeeping entries; it does not initiate bank transfers.
+These public sources were prepared separately from the working installation. The repository excludes the owner's database, personal reports, passwords, certificates, logs, and original local Git history. Test credentials are examples for isolated testing, not credentials for a working installation.
