@@ -22,6 +22,7 @@ import {BalanceRemainder} from "@/components/balance-remainder";
 import {MoneyMonth,MoneyPeriodNote,useMoneyMonth} from "@/components/money-month";
 import {BalanceWater} from "@/components/balance-water";
 import {MandatoryPayments} from "@/components/mandatory-payments";
+import {ExpectedIncomeSources} from "@/components/expected-income-sources";
 import { useFinanceUi } from "@/providers/finance-ui";
 export function MoneyPage() {
   const [params] = useSearchParams();
@@ -93,6 +94,7 @@ export function MoneyPage() {
               <strong data-testid="money-income">
                 {formatMoney(query.data.income, currency)}
               </strong>
+              {mode==="FORECAST"&&<ExpectedIncomeSources key={selected.month+currency} month={selected.month} currency={currency}/>}
               {mode!=="FORECAST"&&<div className="money-actual-expense"><span>{tr("Потрачено в этом месяце")}</span><strong data-testid="money-expense">{formatMoney(query.data.expense,currency)}</strong></div>}
             </Card>
             {mode!=="HISTORY"&&<Card className="daily-metric obligations-card"><MandatoryPayments money={query.data} period={period.data}/></Card>}

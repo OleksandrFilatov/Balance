@@ -17,11 +17,11 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
                  a.initial_balance + coalesce(sum(case when t.credit_account_id = a.id then t.amount else -t.amount end), 0) as balance
           from accounts a left join financial_transactions t
             on (t.debit_account_id = a.id or t.credit_account_id = a.id)
-            and t.status = 'CONFIRMED' and t.deleted = false
+            and t.status = 'CONFIRMED' and t.deleted = false and t.operation_date <= :asOf
           group by a.id, a.currency, a.initial_balance order by a.created_at, a.id
           """,
       nativeQuery = true)
-  List<BalanceRow> balances();
+  List<BalanceRow> balances(@Param("asOf") java.time.LocalDate asOf);
 
   interface BalanceRow {
     UUID getAccountId();

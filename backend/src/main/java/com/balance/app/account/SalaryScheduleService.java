@@ -11,8 +11,10 @@ import org.springframework.transaction.annotation.*;
 @Service
 @Transactional(readOnly=true,isolation=Isolation.REPEATABLE_READ)
 public class SalaryScheduleService {
+  public static final UUID SALARY_CATEGORY=UUID.fromString("00000000-0000-0000-0002-000000000001");
   private final JdbcTemplate jdbc;
-  public SalaryScheduleService(JdbcTemplate jdbc){this.jdbc=jdbc;}
+  private final Clock clock;
+  public SalaryScheduleService(JdbcTemplate jdbc,@org.springframework.beans.factory.annotation.Value("${balance.time-zone:Europe/Berlin}") String zone){this.jdbc=jdbc;clock=Clock.system(ZoneId.of(zone));}
   public record Receipt(String workMonth,LocalDate date,BigDecimal amount){}
   public static LocalDate defaultDate(YearMonth work){
     return work.getYear()==9999&&work.getMonthValue()==12?work.atEndOfMonth():work.plusMonths(1).atDay(15);
@@ -23,7 +25,7 @@ public class SalaryScheduleService {
     return candidates.stream().filter(r->YearMonth.from(r.date()).equals(cashMonth)).sorted(Comparator.comparing(Receipt::date).thenComparing(Receipt::workMonth)).toList();
   }
   public BigDecimal alreadyReceived(YearMonth cashMonth,String currency){
-    return jdbc.queryForObject("select coalesce(sum(amount),0) from financial_transactions where type='INCOME' and status='CONFIRMED' and not deleted and currency=? and operation_date between ? and ?",BigDecimal.class,currency,cashMonth.atDay(1),cashMonth.atEndOfMonth());
+    return jdbc.queryForObject("select coalesce(sum(amount),0) from financial_transactions where type='INCOME' and category_id=? and status='CONFIRMED' and not deleted and currency=? and operation_date between ? and ? and operation_date<=?",BigDecimal.class,SALARY_CATEGORY,currency,cashMonth.atDay(1),cashMonth.atEndOfMonth(),LocalDate.now(clock));
   }
   public BigDecimal expected(YearMonth cashMonth,String currency){
     if(!currency.equals("EUR"))return BigDecimal.ZERO;

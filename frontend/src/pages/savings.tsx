@@ -12,6 +12,8 @@ import {
   Calculator,
   Trash2,
   AlertTriangle,
+  Pause,
+  Play,
 } from "lucide-react";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -181,6 +183,7 @@ export function SavingsPage() {
                     disabled={g.status !== "ACTIVE"}
                   >
                     <Plus size={15} />{" "}{tr("Выделить")}{" "}</Button>
+                  <PauseGoal goal={g} compact />
                   <Button
                     variant="ghost"
                     size="icon"
@@ -238,6 +241,13 @@ function SavingsSimpleTotal() {
   );
 }
 
+function PauseGoal({goal,compact=false}:{goal:Goal;compact?:boolean}) {
+ const refresh=useRefreshFinance();
+ const mutation=useMutation({mutationFn:()=>savingsApi.update(goal,{name:goal.name,description:goal.description,target:goal.target,currency:goal.currency,startDate:goal.startDate,deadline:goal.deadline,monthlyPlan:goal.monthlyPlan},goal.status==="PAUSED"?"ACTIVE":"PAUSED"),onSuccess:async()=>{await refresh();},retry:false});
+ if(goal.status!=="ACTIVE"&&goal.status!=="PAUSED")return null;
+ const label=tr(goal.status==="PAUSED"?"Возобновить цель: {0}":"Приостановить цель: {0}",goal.name);
+ return <><Button variant={compact?"ghost":"secondary"} size={compact?"icon":"small"} className={compact?"goal-pause-compact":undefined} title={label} disabled={mutation.isPending} aria-label={label} onClick={()=>mutation.mutate()}>{goal.status==="PAUSED"?<Play size={14}/>:<Pause size={14}/>} {!compact&&tr(goal.status==="PAUSED"?"Продолжить":"На паузу")}</Button><ErrorNotice error={mutation.error}/></>;
+}
 function DeleteGoal({goal}:{goal:Goal}) {
  const [open,setOpen]=useState(false),refresh=useRefreshFinance(),navigate=useNavigate();
  const mutation=useMutation({mutationFn:async()=>{await savingsApi.remove(goal);await refresh();setOpen(false);navigate("/savings");},retry:false});
@@ -246,7 +256,7 @@ function DeleteGoal({goal}:{goal:Goal}) {
  <ErrorNotice error={mutation.error}/><Button variant="destructive" disabled={mutation.isPending} onClick={()=>mutation.mutate()}>{tr("Удалить цель")}</Button></Dialog>}</>;
 }
 const statusName = (status: string) =>
-  ({ ACTIVE: tr("Активна"), ARCHIVED: tr("В архиве"), ACHIEVED: tr("Достигнута") })[
+  ({ ACTIVE: tr("Активна"), PAUSED: tr("На паузе"), ARCHIVED: tr("В архиве"), ACHIEVED: tr("Достигнута") })[
     status
   ] ?? status;
 export function GoalDetailsPage() {
@@ -278,7 +288,7 @@ export function GoalDetailsPage() {
       <PageHeading
         title={g.name}
         description={g.description || tr("Ваша финансовая цель")}
-        action={tr("Выделить средства")}
+        action={g.status==="ACTIVE"?tr("Выделить средства"):undefined}
         onAction={() => setEditor({ goal: g, mode: "allocate" })}
       />
       <SavingsPanel />
@@ -294,6 +304,7 @@ export function GoalDetailsPage() {
         <Progress goal={g} />
                 <GoalDeadlinePlan goal={g} onSetDate={() => setEditor({goal:g,mode:"edit"})}/>
         <div className="goal-actions">
+          <PauseGoal goal={g}/>
           <Button
             variant="secondary"
             onClick={() => setEditor({ goal: g, mode: "reallocate" })}
@@ -325,13 +336,16 @@ export function GoalDetailsPage() {
               {[
                 [tr("Осталось до цели"), formatMoney(f.remaining)],
                 [tr("Плановая дата"), g.deadline ?? tr("Не задана")],
+                [tr("Дата начала цели"), g.startDate],
+                [tr("Текущий план с"), g.planFromDate],
+                [tr("Уже было отложено при пересчёте"), formatMoney(g.planReservedBaseline)],
                 [
                   tr("Нужно в месяц к сроку"),
                   f.requiredMonthly === null
                     ? tr("Укажите дату")
                     : formatMoney(f.requiredMonthly),
                 ],
-                [tr("Ежемесячный план"), formatMoney(g.monthlyPlan)],
+                [tr("Ежемесячный план"), formatMoney(g.monthlyContribution)],
                 [tr("Осталось взносов"), f.monthsNeeded ?? tr("Укажите взнос")],
                 [tr("Ожидаемая дата"), f.estimatedDate ?? tr("Нет прогноза")],
                 [tr("План к текущему месяцу"), formatMoney(f.plannedToDate)],
@@ -347,7 +361,7 @@ export function GoalDetailsPage() {
             {f.overdue && (
               <p className="validation-error">{" "}{tr("Срок прошёл. Остаток нужно внести сейчас или пересмотреть дату.")}{" "}</p>
             )}
-            <p className="form-note">{" "}{tr("План предполагает первый взнос сегодня, затем ежемесячно. Сравнение использует текущий план с месяца создания цели; это прогноз, а не обещание доходности.")}{" "}</p>
+            <p className="form-note">{" "}{tr("План начинается с указанной даты. Взносы повторяются ежемесячно в то же число; дата окончания ограничивает график. Это план накоплений, а не списание денег.")}{" "}</p>
           </Card>
           <Card className="goal-detail">
             <h2>{tr("Резервы по счетам")}</h2>
@@ -458,6 +472,7 @@ function GoalEditor({
           target: normalizeMoney(String(data.get("target"))),
           currency: "EUR",
           deadline: String(data.get("deadline")) || null,
+          startDate: String(data.get("startDate")),
           monthlyPlan: normalizeMoney(String(data.get("monthlyPlan")), false),
         };
         if (
@@ -468,6 +483,8 @@ function GoalEditor({
           throw new Error(tr("Выберите сегодняшнюю или будущую дату достижения."));
         if (cents(body.monthlyPlan) < 0n)
           throw new Error(tr("Ежемесячный план не может быть отрицательным"));
+        if(body.deadline&&body.startDate&&body.deadline<body.startDate)
+          throw new Error(tr("Дата окончания цели не может быть раньше даты начала."));
         return goal
           ? savingsApi.update(goal, body, String(data.get("status")))
           : savingsApi.create(body);
@@ -555,7 +572,10 @@ function GoalEditor({
                 />
               </Field>
               <div className="form-grid">
-                <Field label={tr("Дата достижения")}>
+                <Field label={tr("Дата начала цели")}>
+                  <Input type="date" name="startDate" min="0001-01-01" max="9999-12-31" defaultValue={goal?.startDate??berlinToday()} required/>
+                </Field>
+                <Field label={tr("Дата окончания цели")}>
                   <Input
                     type="date"
                     name="deadline"
@@ -568,6 +588,7 @@ function GoalEditor({
                     defaultValue={goal?.deadline ?? ""}
                   />
                 </Field>
+              </div>
                 <Field label={tr("План в месяц, EUR")}>
                   <Input
                     name="monthlyPlan"
@@ -576,12 +597,13 @@ function GoalEditor({
                     required
                   />
                 </Field>
-              </div>
+              <p className="form-note">{tr("Оставьте 0 для автоматического расчёта взноса по сумме и сроку. Ещё не внесённые взносы входят в «К оплате до конца месяца». Сохранение цели не списывает деньги.")}</p>
               <Field label={tr("Описание (необязательно)")}><Textarea name="description" rows={2} maxLength={2000} defaultValue={goal?.description??""}/></Field>
               {goal && (
                 <Field label={tr("Статус цели")}>
                   <Select name="status" defaultValue={goal.status}>
                     <option value="ACTIVE">{tr("Активна")}</option>
+                    <option value="PAUSED">{tr("На паузе")}</option>
                     <option value="ACHIEVED">{tr("Достигнута")}</option>
                     <option value="ARCHIVED">{tr("В архиве")}</option>
                   </Select>

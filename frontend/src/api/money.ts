@@ -16,6 +16,7 @@ export interface MoneyOverview {
     debts: PaymentPart;
     household: PaymentPart;
     personal: PaymentPart;
+    goals: PaymentPart;
     total: string;
     complete: boolean;
   };
@@ -29,7 +30,7 @@ export interface MoneyOverview {
   afterMandatory: string | null;
   unknownObligations: string;
   defaultAccountId: string | null;
-  deductions:{type:"DEBT"|"HOUSEHOLD"|"PERSONAL";name:string;date:string;amount:string|null;href:string}[];
+  deductions:{type:"DEBT"|"HOUSEHOLD"|"PERSONAL"|"GOAL";name:string;date:string;amount:string|null;href:string}[];
 }
 export interface PaymentPart { amount: string; complete: boolean }
 export interface HomeSection {

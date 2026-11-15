@@ -8,7 +8,7 @@ import {useMoney} from "@/api/money";
 import {request,write} from "@/api/client";
 import {financeKey,useRefreshFinance} from "@/api/queries";
 import {berlinToday,calendarLabel} from "@/lib/calendar-dates";
-import {formatMoney,normalizeMoney,cents} from "@/lib/money";
+import {formatMoney,normalizeMoney,cents,decimal} from "@/lib/money";
 import {Dialog} from "./ui/dialog";
 import {Button} from "./ui/button";
 import {Field,Input,Select} from "./ui/input";
@@ -21,13 +21,13 @@ export function GoalCalculator({onClose}:{onClose:()=>void}){
  const allowance=useQuery({queryKey:[...financeKey,"personal-allowance",month],queryFn:({signal})=>request<{amount:string|null}>("/money/personal-allowance?month="+month,{signal})});
  return <Dialog open title={tr("Калькулятор целей")} description={tr("Данные подставляются из ваших денег, обязательств и запаса на жизнь.")} onClose={onClose}>
   <div className="period-segments goal-calculator-mode" role="group" aria-label={tr("Данные калькулятора")}><Button variant="ghost" aria-pressed={automatic} onClick={()=>setAutomatic(true)}>{tr("Мои расчёты")}</Button><Button variant="ghost" aria-pressed={!automatic} onClick={()=>setAutomatic(false)}>{tr("Свой сценарий")}</Button></div>
-  {goals.error||money.error||allowance.error?<ErrorNotice error={goals.error??money.error??allowance.error}/>:!goals.data||!money.data||!allowance.data?<Loading/>:automatic?<AutomaticGoalPlan goals={goals.data.filter(g=>g.status==="ACTIVE"&&cents(g.forecast.remaining)>0n)} living={advice.input.living??allowance.data.amount??"0"} initialGoal={advice.input.goalId}/>:<CalculatorForm goals={goals.data.filter(g=>g.status==="ACTIVE")} income={money.data.income} mandatory={money.data.unknownObligations==="0"?money.data.mandatory:""} personal={allowance.data.amount??"0"}/>}
+  {goals.error||money.error||allowance.error?<ErrorNotice error={goals.error??money.error??allowance.error}/>:!goals.data||!money.data||!allowance.data?<Loading/>:automatic?<AutomaticGoalPlan goals={goals.data.filter(g=>g.status==="ACTIVE"&&cents(g.forecast.remaining)>0n)} living={advice.input.living??allowance.data.amount??"0"} initialGoal={advice.input.goalId}/>:<CalculatorForm goals={goals.data.filter(g=>g.status==="ACTIVE")} income={money.data.income} mandatory={money.data.unknownObligations==="0"?decimal(cents(money.data.mandatory)-cents(money.data.breakdown.goals.amount)):""} personal={allowance.data.amount??"0"}/>}
  </Dialog>;
 }
 function AutomaticGoalPlan({goals,living,initialGoal}:{goals:Goal[];living:string;initialGoal:string|null}){
  const [selected,setSelected]=useState(initialGoal&&goals.some(g=>g.id===initialGoal)?initialGoal:goals[0]?.id??""),goal=goals.find(g=>g.id===selected),refresh=useRefreshFinance();
  const q=useAdviceCalculation(berlinToday().slice(0,7),goal?{goalId:goal.id,living,useBalanceOnly:true}:null),result=q.data;
- const save=useMutation({mutationFn:()=>savingsApi.update(goal!,{name:goal!.name,description:goal!.description,target:goal!.target,currency:goal!.currency,deadline:goal!.deadline,monthlyPlan:result!.goal!.recommended},goal!.status),onSuccess:async()=>{await refresh();},retry:false});
+ const save=useMutation({mutationFn:()=>savingsApi.update(goal!,{name:goal!.name,description:goal!.description,target:goal!.target,currency:goal!.currency,startDate:goal!.startDate,deadline:goal!.deadline,monthlyPlan:result!.goal!.recommended},goal!.status),onSuccess:async()=>{await refresh();},retry:false});
  if(!goals.length)return <p className="quiet-empty">{tr("Создайте цель с нужной суммой — здесь появится расчёт взноса.")}</p>;
  return <div className="form-stack goal-calculator goal-calculator-auto"><Field label={tr("На какую цель")}><Select value={selected} onChange={e=>{setSelected(e.target.value);save.reset();}}>{goals.map(g=><option key={g.id} value={g.id}>{categoryName(g)}</option>)}</Select></Field>
  {q.error?<ErrorNotice error={q.error} retry={()=>void q.refetch()}/>:!result||q.isFetching?<Loading label={tr("Обновляем расчёт по вашим данным")}/>:<><div className="goal-auto-inputs"><div><span>{tr("Деньги сейчас")}</span><strong>{formatMoney(result.balance)}</strong></div><div><span>{tr("Мои платежи")}</span><strong>{result.unknownObligations==="0"?formatMoney(result.mandatory):tr("Уточните суммы")}</strong></div><div><span>{tr("На жизнь из ваших расчётов")}</span><strong data-testid="goal-auto-living">{formatMoney(living)}</strong></div><div><span>{tr("Уже накоплено")}</span><strong>{formatMoney(result.reserved)}</strong></div></div>
@@ -39,7 +39,7 @@ function CalculatorForm({goals,income,mandatory,personal}:{goals:Goal[];income:s
  const [goalId,setGoalId]=useState(goals[0]?.id??""),[result,setResult]=useState<Calculation|null>(null),[saved,setSaved]=useState(false),refresh=useRefreshFinance(),guard=useRef(false);
  const goal=goals.find(g=>g.id===goalId);
  const calculate=useMutation({mutationFn:(data:FormData)=>write<Calculation>("/savings/calculator","POST",{goalId,expectedIncome:normalizeMoney(String(data.get("income")),false),mandatoryPayments:normalizeMoney(String(data.get("mandatory")),false),personalSpending:normalizeMoney(String(data.get("personal")),false)}),retry:false});
- const save=useMutation({mutationFn:()=>savingsApi.update(goal!,{name:goal!.name,description:goal!.description,target:goal!.target,currency:goal!.currency,deadline:goal!.deadline,monthlyPlan:result!.recommended},goal!.status),onSuccess:async()=>{setSaved(true);await refresh();},retry:false});
+ const save=useMutation({mutationFn:()=>savingsApi.update(goal!,{name:goal!.name,description:goal!.description,target:goal!.target,currency:goal!.currency,startDate:goal!.startDate,deadline:goal!.deadline,monthlyPlan:result!.recommended},goal!.status),onSuccess:async()=>{setSaved(true);await refresh();},retry:false});
  async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();if(guard.current)return;guard.current=true;setSaved(false);save.reset();setResult(null);try{setResult(await calculate.mutateAsync(new FormData(e.currentTarget)));}catch{/* Error is shown below. */}finally{guard.current=false;}}
  if(!goals.length)return <p className="quiet-empty">{tr("Сначала создайте цель с нужной суммой. Затем здесь можно подобрать комфортный взнос.")}</p>;
  return <form className="form-stack goal-calculator" onSubmit={submit} onChange={()=>{setResult(null);setSaved(false);calculate.reset();save.reset();}}>

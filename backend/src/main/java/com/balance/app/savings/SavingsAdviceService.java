@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.time.*;
 import java.util.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.*;
 
@@ -20,14 +19,12 @@ public class SavingsAdviceService {
   private static final BigDecimal ZERO = new BigDecimal("0.00");
   private final PersonalMoneyService money;
   private final SavingsService savings;
-  private final JdbcTemplate jdbc;
   private final Clock clock;
 
-  public SavingsAdviceService(PersonalMoneyService money, SavingsService savings, JdbcTemplate jdbc,
+  public SavingsAdviceService(PersonalMoneyService money, SavingsService savings,
       @Value("${balance.time-zone:Europe/Berlin}") String zone) {
     this.money = money;
     this.savings = savings;
-    this.jdbc = jdbc;
     this.clock = Clock.system(ZoneId.of(zone));
   }
 
@@ -63,30 +60,25 @@ public class SavingsAdviceService {
     if (cash.income().signum() == 0 && !input.useBalanceOnly()) missing.add("INCOME");
     if (cash.unknownObligations() != 0) missing.add("OBLIGATIONS");
     boolean ready = missing.isEmpty();
-    var net = ready ? cash.balance().subtract(cash.mandatory()).subtract(coverage.reserved()).subtract(living) : null;
+    // Goal contributions are handled below per selected goal, not twice as mandatory cash costs.
+    var goalDues=cash.deductions().stream().filter(d->"GOAL".equals(d.type())).map(PersonalMoneyDto.Deduction::amount).reduce(ZERO,BigDecimal::add);
+    var mandatory=cash.mandatory().subtract(goalDues);
+    var net = ready ? cash.balance().subtract(mandatory).subtract(coverage.reserved()).subtract(living) : null;
     var available = net == null ? null : net.max(ZERO);
     var shortage = net == null ? null : net.negate().max(ZERO);
     GoalAdvice goal = null;
     if (ready && selected != null) {
-      Map<UUID, BigDecimal> added = new HashMap<>();
-      jdbc.query("select goal_id,sum(amount) amount from savings_entries where account_id is not null"
-          + " and created_at>=? and created_at<? group by goal_id", rs -> {
-            added.put(rs.getObject("goal_id", UUID.class), rs.getBigDecimal("amount"));
-          }, java.sql.Timestamp.from(month.atDay(1).atStartOfDay(clock.getZone()).toInstant()),
-          java.sql.Timestamp.from(month.plusMonths(1).atDay(1).atStartOfDay(clock.getZone()).toInstant()));
       var chosenId = selected.id();
-      var others = goals.stream().filter(g -> !g.id().equals(chosenId))
-          .map(g -> g.monthlyPlan().subtract(added.getOrDefault(g.id(), ZERO).max(ZERO))
-              .max(ZERO).min(g.forecast().remaining()))
-          .reduce(ZERO, BigDecimal::add);
+      var others=cash.deductions().stream().filter(d->"GOAL".equals(d.type())&&!d.href().equals("/savings/"+chosenId))
+          .map(PersonalMoneyDto.Deduction::amount).reduce(ZERO,BigDecimal::add);
       var result = SavingsPlanningService.fromAvailable(selected, available, others, today);
       goal = new GoalAdvice(selected.id(), selected.name(), result.remaining(), others,
           result.available(), result.recommended(), result.requiredMonthly(), result.monthsNeeded(),
           result.estimatedDate(), result.deadline(), result.feasible());
     }
     return new Advice(month.toString(), "EUR", ready, List.copyOf(missing), cash.balance(),
-        cash.income(), cash.mandatory(), coverage.reserved(), living, available, shortage,
+        cash.income(), mandatory, coverage.reserved(), living, available, shortage,
         cash.unknownObligations(), input.useBalanceOnly(), coverage.accounts().stream().anyMatch(SavingsDto.Coverage::underfunded),
-        cash.deductions(), goals.stream().map(g -> new Choice(g.id(), g.name())).toList(), goal);
+        cash.deductions().stream().filter(d->!"GOAL".equals(d.type())).toList(), goals.stream().map(g -> new Choice(g.id(), g.name())).toList(), goal);
   }
 }

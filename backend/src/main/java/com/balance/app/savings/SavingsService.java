@@ -76,6 +76,7 @@ public class SavingsService {
   private void apply(SavingsGoal g, SavingsDto.Write r) {
     if (r == null || !"EUR".equals(r.currency()))
       throw DomainException.invalid("Savings support EUR only");
+    var previousTarget=g.target;var previousPlan=g.monthlyPlan;var previousStart=g.startDate;var previousDeadline=g.deadline;
     g.name = Money.name(r.name());
     g.description = r.description() == null ? "" : r.description().strip();
     if (g.description.length() > 2000) throw DomainException.invalid("Description too long");
@@ -87,6 +88,14 @@ public class SavingsService {
       throw DomainException.invalid("Invalid date");
     g.currency = "EUR";
     g.deadline = r.deadline();
+    g.startDate = r.startDate()!=null?r.startDate():g.startDate!=null?g.startDate:LocalDate.now(clock);
+    if(g.startDate.getYear()<1||g.startDate.getYear()>9999||g.deadline!=null&&g.deadline.isBefore(g.startDate))
+      throw DomainException.invalid("Дата окончания цели не может быть раньше даты начала.");
+    if(previousStart==null){g.planFromDate=g.startDate;g.planReservedBaseline=BigDecimal.ZERO;}
+    else if(previousTarget.compareTo(g.target)!=0||previousPlan.compareTo(g.monthlyPlan)!=0||!previousStart.equals(g.startDate)||!Objects.equals(previousDeadline,g.deadline)){
+      var today=LocalDate.now(clock);g.planFromDate=g.startDate.isAfter(today)?g.startDate:today;
+      g.planReservedBaseline=reserved(g.id,null).max(BigDecimal.ZERO);
+    }
   }
 
   private SavingsDto.View view(SavingsGoal g) {
@@ -119,7 +128,7 @@ public class SavingsService {
     Money.version(g.version, r.version());
     validateNewDeadline(r.goal().deadline(), g.deadline);
     apply(g, r.goal());
-    if (!Set.of("ACTIVE", "ARCHIVED", "ACHIEVED").contains(r.status()))
+    if (!Set.of("ACTIVE", "PAUSED", "ARCHIVED", "ACHIEVED").contains(r.status()))
       throw DomainException.invalid("Invalid status");
     if ("ACHIEVED".equals(r.status()) && reserved(id, null).compareTo(g.target) < 0)
       throw DomainException.conflict("Goal is not fully funded");

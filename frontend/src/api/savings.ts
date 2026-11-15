@@ -8,8 +8,13 @@ export interface GoalInput {
   currency: string;
   deadline: string | null;
   monthlyPlan: string;
+  startDate?: string;
 }
 export interface Goal extends GoalInput {
+  startDate: string;
+  monthlyContribution: string;
+  planFromDate: string;
+  planReservedBaseline: string;
   id: string;
   status: string;
   version: number;

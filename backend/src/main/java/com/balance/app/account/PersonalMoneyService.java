@@ -33,6 +33,7 @@ public class PersonalMoneyService {
   private final JdbcTemplate jdbc;
   private final Clock clock;
   private final com.balance.app.calendar.CalendarService personalCalendar;
+  private final com.balance.app.savings.SavingsSchedule savingsSchedule;
 
   public PersonalMoneyService(
       AccountService a,
@@ -47,7 +48,8 @@ public class PersonalMoneyService {
       CategoryRepository cr,
       JdbcTemplate j,
       @Value("${balance.time-zone:Europe/Berlin}") String zone,
-      com.balance.app.calendar.CalendarService personalCalendar) {
+      com.balance.app.calendar.CalendarService personalCalendar,com.balance.app.savings.SavingsSchedule savingsSchedule) {
+    this.savingsSchedule=savingsSchedule;
     accountService = a;
     accounts = ar;
     transactions = t;
@@ -249,6 +251,10 @@ public class PersonalMoneyService {
     }
     var pending=jdbc.queryForList("select description,operation_date,amount from financial_transactions where type='EXPENSE' and scope='PERSONAL' and status='PENDING' and not deleted and currency=? and operation_date<=? order by operation_date,id",currency,end);
     for(var row:pending){var amount=(BigDecimal)row.get("amount");due=due.add(amount);var name=(String)row.get("description");deductions.add(new PersonalMoneyDto.Deduction("PERSONAL",name==null||name.isBlank()?"Ожидающий личный расход":name,((java.sql.Date)row.get("operation_date")).toLocalDate(),amount,"/money"));}
+    if("EUR".equals(currency))for(var goal:savingsSchedule.until(end)){
+      due=due.add(goal.amount());
+      deductions.add(new PersonalMoneyDto.Deduction("GOAL",goal.name(),goal.date(),goal.amount(),"/savings/"+goal.id()));
+    }
     deductions.sort(Comparator.comparing(PersonalMoneyDto.Deduction::date).thenComparing(PersonalMoneyDto.Deduction::name));
     return new PersonalMoneyDto.Overview(
         currency,

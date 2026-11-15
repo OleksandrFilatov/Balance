@@ -1,6 +1,6 @@
 import { t as tr } from "@/i18n";
 import { Link } from "react-router";
-import { House, Landmark, UserRound, ChevronRight } from "lucide-react";
+import { House, Landmark, UserRound, ChevronRight, Target } from "lucide-react";
 import type { MoneyOverview, MoneyPeriod } from "@/api/money";
 import { formatMoney } from "@/lib/money";
 
@@ -12,6 +12,7 @@ export function MandatoryPayments({ money, period }: { money: MoneyOverview; per
     { key: "debts", label: tr("Платежи по долгам"), part: b.debts, href: "/debts", Icon: Landmark },
     { key: "household", label: tr("Коммуналка · моя доля"), part: b.household, href: "/household?month=" + month, Icon: House },
     { key: "personal", label: tr("Личные расходы"), part: b.personal, href: "/personal-expenses?month=" + month, Icon: UserRound },
+    { key: "goals", label: tr("Взносы на цели"), part: b.goals, href: "/savings", Icon: Target },
   ];
   return <section className="mandatory-payments" aria-label={tr("Обязательные платежи по видам")} data-testid="mandatory-breakdown">
     <h2>{tr("К оплате")}{" "}{period?.mode === "FORECAST" ? tr("за месяц") : tr("до конца месяца")}</h2>

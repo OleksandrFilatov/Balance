@@ -9,6 +9,7 @@ export interface HouseholdItem {
 }
 export interface HouseholdPlan {
  myReceiptDate:string;
+ mineSource?:"MANUAL"|"SHIFTS";shiftIncome?:{net:string|null;status:string;taxYear?:string|null};
  month:string;myIncome:string;iraIncome:string;version:number;configured:boolean;
  difference:string;total:string;mine:string|null;ira:string|null;
  lines:{categoryId:string;name:string;total:string;mine:string|null;ira:string|null;split:"PROPORTIONAL"|"EQUAL"}[];
@@ -17,7 +18,7 @@ export interface HouseholdPlan {
 export function useHouseholdPlan(month:string) {
  return useQuery({queryKey:[...financeKey,"household-plan",month],queryFn:({signal})=>request<HouseholdPlan>("/money/household-plan?month="+month,{signal}),refetchInterval:15000});
 }
-export const saveHouseholdIncome=(month:string,mine:string,ira:string,version:number,myReceiptDate?:string)=>write<HouseholdPlan>("/money/household-plan?month="+month,"PUT",{mine,ira,version,myReceiptDate});
+export const saveHouseholdIncome=(month:string,mine:string,ira:string,version:number,myReceiptDate?:string,mineSource:"MANUAL"|"SHIFTS"="MANUAL")=>write<HouseholdPlan>("/money/household-plan?month="+month,"PUT",{mine,ira,version,myReceiptDate,mineSource});
 export interface BillAmounts {mine:string|null;ira:string|null}
 export interface BillItem {id:string;month:string;templateId:string;date:string;categoryId:string;name:string;split:"PROPORTIONAL"|"EQUAL";amount:string;mine:string|null;mineRemaining:string|null;ira:string|null;minePaid:boolean;iraPaid:boolean;legacyTransactionId:string|null}
 export interface BillMonth {month:string;planned:BillAmounts;remaining:BillAmounts;items:BillItem[]}

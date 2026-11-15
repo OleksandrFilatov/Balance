@@ -30,7 +30,7 @@ public final class PersonalMoneyDto {
     /** A presentation split of the same obligations; never an extra debit or balance. */
     @com.fasterxml.jackson.annotation.JsonProperty("breakdown")
     public PaymentBreakdown breakdown() {
-      return new PaymentBreakdown(part("DEBT"), part("HOUSEHOLD"), part("PERSONAL"),
+      return new PaymentBreakdown(part("DEBT"), part("HOUSEHOLD"), part("PERSONAL"),part("GOAL"),
           mandatory, unknownObligations == 0);
     }
 
@@ -44,7 +44,7 @@ public final class PersonalMoneyDto {
 
   public record PaymentPart(BigDecimal amount, boolean complete) {}
   public record PaymentBreakdown(PaymentPart debts, PaymentPart household, PaymentPart personal,
-      BigDecimal total, boolean complete) {}
+      PaymentPart goals,BigDecimal total, boolean complete) {}
 
   public record Deduction(String type,String name,LocalDate date,BigDecimal amount,String href) {}
 

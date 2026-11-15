@@ -1,9 +1,7 @@
 package com.balance.app.account;
 
 import com.balance.app.debt.DebtService;
-import com.balance.app.recurring.*;
 import com.balance.app.service.*;
-import com.balance.app.transaction.TransactionType;
 import java.math.BigDecimal;
 import java.time.*;
 import java.util.*;
@@ -18,16 +16,12 @@ import org.springframework.transaction.annotation.*;
 public class MoneyPeriodService {
   private static final BigDecimal ZERO=new BigDecimal("0.00");
   private final PersonalMoneyService money;
-  private final RecurringService recurring;
-  private final Recurrence recurrence;
   private final DebtService debts;
   private final JdbcTemplate jdbc;
   private final Clock clock;
-  private final SalaryScheduleService salaries;
-  public MoneyPeriodService(PersonalMoneyService money,RecurringService recurring,Recurrence recurrence,
-      DebtService debts,JdbcTemplate jdbc,SalaryScheduleService salaries,@Value("${balance.time-zone:Europe/Berlin}") String zone){
-    this.money=money;this.recurring=recurring;this.recurrence=recurrence;this.debts=debts;this.jdbc=jdbc;this.clock=Clock.system(ZoneId.of(zone));
-    this.salaries=salaries;
+  private final IncomeForecastService incomes;
+  public MoneyPeriodService(PersonalMoneyService money,DebtService debts,JdbcTemplate jdbc,IncomeForecastService incomes,@Value("${balance.time-zone:Europe/Berlin}") String zone){
+    this.money=money;this.debts=debts;this.jdbc=jdbc;this.incomes=incomes;this.clock=Clock.system(ZoneId.of(zone));
   }
   public record Step(String month,BigDecimal opening,BigDecimal income,BigDecimal payments,
       BigDecimal closing,long unknownObligations){}
@@ -67,15 +61,13 @@ public class MoneyPeriodService {
       }
     }
     var steps=new ArrayList<Step>();
-    var opening=now.balance();var previousIncome=ZERO;var previousDue=now;
+    var opening=now.balance();var previousDue=now;
     BigDecimal previousMandatory=ZERO;
     boolean known=true;Step last=null;
     PersonalMoneyDto.Overview cumulative=now;
     for(var month=current;!month.isAfter(selected);month=month.plusMonths(1)){
       cumulative=month.equals(current)?now:money.overviewUntil(currency,month.atEndOfMonth(),obligationCache);
-      var income=expectedIncome(currency,month.atEndOfMonth());
-      var monthlyIncome=income.subtract(previousIncome);
-      monthlyIncome=withMonthlySalary(month,currency,monthlyIncome);
+      var monthlyIncome=incomes.total(month,currency);
       var monthlyDue=cumulative.mandatory().subtract(previousMandatory);
       long unknown=cumulative.unknownObligations()+uncertainDebts;
       boolean openingKnown=known;
@@ -85,7 +77,7 @@ public class MoneyPeriodService {
       steps.add(last);
       if(!month.equals(selected))previousDue=cumulative;
       if(closing!=null)opening=closing;
-      previousIncome=income;previousMandatory=cumulative.mandatory();
+      previousMandatory=cumulative.mandatory();
     }
     var lines=difference(cumulative.deductions(),previousDue.deductions(),selected.atEndOfMonth());
     var overview=new PersonalMoneyDto.Overview(currency,today,selected.atEndOfMonth(),
@@ -93,21 +85,6 @@ public class MoneyPeriodService {
         last.payments(),last.closing(),known?0:Math.max(1,last.unknownObligations()),now.defaultAccountId(),lines);
     if(!known)warnings.add("Не все обязательства определены. Уточните зарплаты в коммуналке для каждого месяца и проверьте отмеченные графики долгов. До этого точный перенос остатка не показан.");
     return new Period(text,"FORECAST",known,overview,last.opening(),ZERO,List.copyOf(steps),List.copyOf(warnings));
-  }
-
-  private BigDecimal expectedIncome(String currency,LocalDate end){
-    var total=jdbc.queryForObject("select coalesce(sum(amount),0) from financial_transactions where type='INCOME' and status='PENDING' and not deleted and currency=? and operation_date<=?",BigDecimal.class,currency,end);
-    for(var r:recurring.list())if("ACTIVE".equals(r.status())&&r.nextDate()!=null&&!r.nextDate().isAfter(end)
-        &&r.currency().equals(currency)&&r.template().type()==TransactionType.INCOME){
-      long count=recurrence.count(r.template().firstDate(),r.template().frequency(),r.nextDate(),end,r.template().endDate());
-      total=total.add(r.template().amount().multiply(BigDecimal.valueOf(count)));
-    }
-    return total;
-  }
-
-  private BigDecimal withMonthlySalary(YearMonth month,String currency,BigDecimal knownIncome){
-    if(!"EUR".equals(currency))return knownIncome;
-    return knownIncome.max(salaries.expected(month,currency));
   }
 
   private Period historical(YearMonth month,String currency,LocalDate today){

@@ -17,9 +17,11 @@ public class SavingsPlanningService {
   private static final BigDecimal ZERO = new BigDecimal("0.00");
   private final SavingsService savings;
   private final Clock clock;
+  private final SavingsSchedule schedule;
 
-  public SavingsPlanningService(SavingsService savings, @Value("${balance.time-zone:Europe/Berlin}") String zone) {
+  public SavingsPlanningService(SavingsService savings,SavingsSchedule schedule, @Value("${balance.time-zone:Europe/Berlin}") String zone) {
     this.savings = savings;
+    this.schedule=schedule;
     this.clock = Clock.system(ZoneId.of(zone));
   }
 
@@ -38,9 +40,7 @@ public class SavingsPlanningService {
   public Result calculate(Input input) {
     var goal = savings.get(input.goalId());
     if (!"ACTIVE".equals(goal.status())) throw DomainException.invalid("Выберите активную цель.");
-    var otherPlans = savings.list().stream()
-        .filter(g -> !g.id().equals(goal.id()) && "ACTIVE".equals(g.status()) && g.forecast().remaining().signum()>0)
-        .map(SavingsDto.View::monthlyPlan).reduce(ZERO, BigDecimal::add);
+    var otherPlans=schedule.until(YearMonth.now(clock).atEndOfMonth()).stream().filter(d->!d.id().equals(goal.id())).map(SavingsSchedule.Due::amount).reduce(ZERO,BigDecimal::add);
     return calculate(input, goal, otherPlans, LocalDate.now(clock));
   }
 
@@ -61,14 +61,15 @@ public class SavingsPlanningService {
     var gap = available.negate().max(ZERO);
     available = available.max(ZERO);
     var remaining = goal.forecast().remaining().max(ZERO);
-    Long months = SavingsMapper.contributionMonths(today,goal.deadline());
+    var first=today.isBefore(goal.planFromDate())?goal.planFromDate():today;
+    Long months = SavingsMapper.contributionMonths(first,goal.deadline());
     var required = months==null ? null : remaining.divide(BigDecimal.valueOf(Math.max(1,months)),2,RoundingMode.CEILING);
     var recommended = available.min(remaining);
     if (required!=null) recommended=recommended.min(required);
     BigDecimal needed = remaining.signum()==0 ? BigDecimal.ZERO : recommended.signum()==0 ? null : remaining.divide(recommended,0,RoundingMode.CEILING);
     LocalDate estimated = null;
     if (needed!=null && needed.compareTo(BigDecimal.valueOf(119987))<=0) {
-      try { estimated=today.plusMonths(Math.max(0,needed.longValueExact()-1)); if(estimated.getYear()>9999)estimated=null; }
+      try { estimated=first.plusMonths(Math.max(0,needed.longValueExact()-1)); if(estimated.getYear()>9999)estimated=null; }
       catch(DateTimeException | ArithmeticException ignored) { /* Outside supported calendar. */ }
     }
     boolean feasible=remaining.signum()==0 || gap.signum()==0 && recommended.signum()>0 &&

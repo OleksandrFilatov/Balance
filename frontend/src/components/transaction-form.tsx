@@ -199,6 +199,7 @@ function Editor({
   const [error, setError] = useState<Error | null>(null),
     [busy, setBusy] = useState(false),
     [uncertain, setUncertain] = useState(false);
+  const future=date>today();
   const [newCategory, setNewCategory] = useState<string | null>(null),
     [manageCategories, setManageCategories] = useState(false);
   const key = useRef(crypto.randomUUID()),
@@ -282,7 +283,7 @@ function Editor({
                     : scope,
               operationDate: date,
               description: description.trim(),
-              status,
+              status:future?"PENDING":status,
             };
       if (
         !body.operationDate ||
@@ -414,6 +415,7 @@ function Editor({
               )}
             </div>
           )}
+          {type==="INCOME"&&category&&<p className="form-note">{tr(category==="00000000-0000-0000-0002-000000000001"?"Эта категория учитывается в плане зарплаты. Дополнительный доход выбирайте в другой категории.":"Этот доход прибавляется к зарплате отдельно.")}</p>}
           {available.length === 1 && type !== "TRANSFER" && (
             <p className="form-note">
               {source?.name} · {currency}
@@ -511,9 +513,10 @@ function Editor({
                     required
                   />
                 </Field>
-                {(!!transaction||status==="PENDING"||window.location.pathname==="/transactions")&&<Field label={tr("Статус")}>
+                {(future||!!transaction||status==="PENDING"||window.location.pathname==="/transactions")&&<Field label={tr("Статус")}>
                   <Select
-                    value={status}
+                    value={future?"PENDING":status}
+                    disabled={future}
                     onChange={(e) => setStatus(e.target.value as Status)}
                   >
                     <option value="CONFIRMED">{tr("Подтверждена")}</option>
@@ -526,7 +529,8 @@ function Editor({
         {uncertain && (
           <p className="form-note">{" "}{tr("Ответ не получен: операция могла сохраниться. Повтор будет отправлен с тем же ключом; новая операция не создастся. Для отредактированной записи при конфликте обновите список.")}{" "}</p>
         )}
-        {status === "PENDING" && (
+        {future&&<p className="form-note" role="status">{tr("Будущая операция будет ожидаемой. Она появится в прогнозе, но не изменит текущий баланс и не запустит автооплату.")}</p>}
+        {(future||status === "PENDING") && (
           <p className="form-note">{" "}{tr("Ожидающая операция не изменит баланс до подтверждения.")}{" "}</p>
         )}
         <div className="dialog-footer">

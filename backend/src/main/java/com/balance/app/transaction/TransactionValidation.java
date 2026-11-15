@@ -8,11 +8,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionValidation {
+  private final java.time.Clock clock;
+  public TransactionValidation(@org.springframework.beans.factory.annotation.Value("${balance.time-zone:Europe/Berlin}") String zone){clock=java.time.Clock.system(java.time.ZoneId.of(zone));}
   public TransactionDto.Write normalize(TransactionDto.Write r) {
     if (r == null || r.type() == null || r.status() == null || r.operationDate() == null)
       throw DomainException.invalid("Type, status and operationDate are required");
     if (r.operationDate().getYear() < 1 || r.operationDate().getYear() > 9999)
       throw DomainException.invalid("Date year must be between 1 and 9999");
+    if(r.status()==TransactionStatus.CONFIRMED&&r.operationDate().isAfter(java.time.LocalDate.now(clock)))
+      throw DomainException.invalid("Будущую операцию можно сохранить только как ожидаемую.");
     String description = r.description() == null ? "" : r.description().strip();
     if (description.length() > 2000)
       throw DomainException.invalid("Description exceeds 2000 characters");

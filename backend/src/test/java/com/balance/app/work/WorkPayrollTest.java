@@ -11,6 +11,16 @@ class WorkPayrollTest {
   for(String amount:new String[]{"122.64","603.00","1500.00","2000.00","2000.01"}){var gross=new BigDecimal(amount);var r=GermanPayroll.estimate(gross,YearMonth.of(2026,11),LocalDate.of(1995,1,1),false,0,0,new BigDecimal("2.9"));assertNotNull(r.net());assertTrue(r.net().signum()>=0);assertTrue(r.net().compareTo(gross)<=0);assertEquals(gross,r.net().add(r.tax()).add(r.solidarity()).add(r.pension()).add(r.unemployment()).add(r.health()).add(r.care()));}
   var low=GermanPayroll.estimate(new BigDecimal("1500.00"),YearMonth.of(2026,11),LocalDate.of(1995,1,1),false,0,0,new BigDecimal("2.9"));assertEquals(new BigDecimal("139.50"),low.pension());assertEquals(new BigDecimal("19.50"),low.unemployment());assertEquals(new BigDecimal("131.25"),low.health());assertEquals(new BigDecimal("36.00"),low.care());
  }
- @Test void unavailableYearHasExplicitReasonAndNoInventedAmounts(){var r=GermanPayroll.estimate(new BigDecimal("3000"),YearMonth.of(2027,1),LocalDate.of(1995,1,1),false,0,0,new BigDecimal("2.9"));assertEquals("UNSUPPORTED_YEAR",r.status());assertNull(r.taxYear());assertNull(r.net());assertNull(r.tax());assertNull(r.health());assertTrue(r.note().contains("2027"));var missing=GermanPayroll.estimate(new BigDecimal("3000"),YearMonth.of(2026,1),null,false,0,0,new BigDecimal("2.9"));assertEquals("SETTINGS_REQUIRED",missing.status());assertEquals(2026,missing.taxYear());}
- @Test void unsupportedCasesAreNeverInvented(){assertNull(GermanPayroll.estimate(new BigDecimal("3000"),YearMonth.of(2027,1),LocalDate.of(1995,1,1),false,0,0,new BigDecimal("2.9")).net());assertNull(GermanPayroll.estimate(new BigDecimal("3000"),YearMonth.of(2026,11),null,false,0,0,new BigDecimal("2.9")).net());}
+ @Test void unavailableYearHasExplicitReasonAndNoInventedAmounts(){var r=GermanPayroll.estimate(new BigDecimal("3000"),YearMonth.of(2028,1),LocalDate.of(1995,1,1),false,0,0,new BigDecimal("2.9"));assertEquals("UNSUPPORTED_YEAR",r.status());assertNull(r.taxYear());assertNull(r.net());assertNull(r.tax());assertNull(r.health());assertTrue(r.note().contains("2028"));var missing=GermanPayroll.estimate(new BigDecimal("3000"),YearMonth.of(2026,1),null,false,0,0,new BigDecimal("2.9"));assertEquals("SETTINGS_REQUIRED",missing.status());assertEquals(2026,missing.taxYear());}
+ @Test void unsupportedCasesAreNeverInvented(){assertNull(GermanPayroll.estimate(new BigDecimal("3000"),YearMonth.of(2028,1),LocalDate.of(1995,1,1),false,0,0,new BigDecimal("2.9")).net());assertNull(GermanPayroll.estimate(new BigDecimal("3000"),YearMonth.of(2027,1),null,false,0,0,new BigDecimal("2.9")).net());}
+ @Test void nextYearForecastNamesItsBasisAndAccountsForEveryDeduction(){
+  var birth=LocalDate.of(1995,1,1);var extra=new BigDecimal("2.90");
+  for(String amount:new String[]{"2575.44","2452.80","2820.72","9000.00"}){
+   var gross=new BigDecimal(amount);var forecast=GermanPayroll.estimate(gross,YearMonth.of(2027,1),birth,false,0,0,extra);
+   var baseline=GermanPayroll.estimate(gross,YearMonth.of(2026,1),birth,false,0,0,extra);
+   assertEquals("PROVISIONAL",forecast.status());assertEquals(2026,forecast.taxYear());assertTrue(forecast.note().contains("2027 по правилам 2026"));
+   assertEquals(baseline.net(),forecast.net());assertEquals(baseline.tax(),forecast.tax());assertEquals(baseline.health(),forecast.health());
+   assertEquals(gross,forecast.net().add(forecast.tax()).add(forecast.solidarity()).add(forecast.pension()).add(forecast.unemployment()).add(forecast.health()).add(forecast.care()));
+  }
+ }
 }

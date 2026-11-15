@@ -23,6 +23,9 @@ public class SavingsGoal {
   String currency;
 
   LocalDate deadline;
+  @Column(nullable = false) LocalDate startDate;
+  @Column(nullable = false) LocalDate planFromDate;
+  @Column(nullable = false) BigDecimal planReservedBaseline;
 
   @Column(nullable = false, precision = 19, scale = 2)
   BigDecimal monthlyPlan;

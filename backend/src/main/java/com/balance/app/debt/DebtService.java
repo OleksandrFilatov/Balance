@@ -24,6 +24,7 @@ public class DebtService {
   private final CategoryRepository categories;
   private final DebtMapper mapper;
   private final JdbcTemplate jdbc;
+  private final Clock clock;
 
   public DebtService(
       DebtRepository d,
@@ -34,7 +35,8 @@ public class DebtService {
       TransactionRepository t,
       CategoryRepository c,
       DebtMapper m,
-      JdbcTemplate j) {
+      JdbcTemplate j,@org.springframework.beans.factory.annotation.Value("${balance.time-zone:Europe/Berlin}")String zone) {
+    clock=Clock.system(ZoneId.of(zone));
     debts = d;
     this.reversals = reversals;
     payments = p;
@@ -44,6 +46,11 @@ public class DebtService {
     categories = c;
     mapper = m;
     jdbc = j;
+  }
+
+  private void postedDate(LocalDate value){
+    date(value);
+    if(value!=null&&value.isAfter(LocalDate.now(clock)))throw DomainException.invalid("Нельзя проводить платёж, получение кредита или отмену будущей датой. Укажите дату фактической операции.");
   }
 
   private DebtDto.Payment paymentView(DebtPayment p) {
@@ -83,7 +90,7 @@ public class DebtService {
             .orElseThrow(() -> DomainException.missing("Payment"));
     if (reversals.findByPaymentId(paymentId).isPresent())
       throw DomainException.conflict("Payment already reversed");
-    date(request.operationDate());
+    postedDate(request.operationDate());
     if (request.operationDate() == null
         || request.operationDate().isBefore(p.operationDate)
         || request.reason() == null
@@ -312,7 +319,7 @@ public class DebtService {
     if ("NEW_LOAN".equals(d.origin)) {
       if (d.originalAmount.compareTo(d.openingRemaining) != 0 || r.operationDate() == null)
         throw DomainException.invalid("New loan must be received in full");
-      date(r.operationDate());
+      postedDate(r.operationDate());
       account = account(r.accountId());
     } else if (r.accountId() != null || r.operationDate() != null)
       throw DomainException.invalid("Existing debt does not move money");
@@ -396,7 +403,7 @@ public class DebtService {
     }
     if (principal.compareTo(d.openingRemaining.subtract(payments.paid(id))) > 0)
       throw DomainException.conflict("Principal exceeds remaining debt");
-    date(r.operationDate());
+    postedDate(r.operationDate());
     date(r.nextPayment());
     if(r.nextPayment()!=null&&jdbc.queryForObject("select count(*) from debt_monthly_plans where debt_id=?",Long.class,id)>0)throw DomainException.conflict("Следующая дата помесячного долга рассчитывается из графика автоматически.");
     String note = r.description() == null ? "" : r.description().strip();

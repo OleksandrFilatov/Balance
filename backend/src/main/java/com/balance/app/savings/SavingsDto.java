@@ -13,12 +13,15 @@ public final class SavingsDto {
           BigDecimal target,
       @NotNull @Pattern(regexp = "EUR") String currency,
       LocalDate deadline,
-      @NotNull @DecimalMin("0") @Digits(integer = 17, fraction = 2) BigDecimal monthlyPlan) {}
+      @NotNull @DecimalMin("0") @Digits(integer = 17, fraction = 2) BigDecimal monthlyPlan,
+      LocalDate startDate) {
+    public Write(String name,String description,BigDecimal target,String currency,LocalDate deadline,BigDecimal monthlyPlan){this(name,description,target,currency,deadline,monthlyPlan,null);}
+  }
 
   public record Update(
       @NotNull @jakarta.validation.Valid Write goal,
       @NotNull Long version,
-      @NotNull @Pattern(regexp = "ACTIVE|ARCHIVED|ACHIEVED") String status) {}
+      @NotNull @Pattern(regexp = "ACTIVE|PAUSED|ARCHIVED|ACHIEVED") String status) {}
 
   public record Move(
       @NotNull UUID accountId,
@@ -58,7 +61,7 @@ public final class SavingsDto {
       Instant createdAt,
       long version,
       BigDecimal reserved,
-      Forecast forecast) {}
+      Forecast forecast, LocalDate startDate, BigDecimal monthlyContribution,LocalDate planFromDate,BigDecimal planReservedBaseline) {}
 
   public record Coverage(
       UUID accountId,

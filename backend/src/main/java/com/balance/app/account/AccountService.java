@@ -11,8 +11,10 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountService {
   private final AccountRepository accounts;
   private final AccountMapper mapper;
+  private final java.time.Clock clock;
 
-  public AccountService(AccountRepository accounts, AccountMapper mapper) {
+  public AccountService(AccountRepository accounts, AccountMapper mapper,@org.springframework.beans.factory.annotation.Value("${balance.time-zone:Europe/Berlin}") String zone) {
+    clock=java.time.Clock.system(java.time.ZoneId.of(zone));
     this.accounts = accounts;
     this.mapper = mapper;
   }
@@ -53,7 +55,7 @@ public class AccountService {
   @Transactional(readOnly = true)
   public AccountDto.Balances balances() {
     List<AccountDto.Balance> rows =
-        accounts.balances().stream()
+        accounts.balances(java.time.LocalDate.now(clock)).stream()
             .map(r -> new AccountDto.Balance(r.getAccountId(), r.getCurrency(), r.getBalance()))
             .toList();
     Map<String, BigDecimal> totals = new TreeMap<>();

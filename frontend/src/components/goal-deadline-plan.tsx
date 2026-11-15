@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 
 export function GoalDeadlinePlan({goal, onSetDate}: {goal: Goal; onSetDate: () => void}) {
   const forecast = goal.forecast;
+  if(goal.status==="PAUSED")return <p className="goal-deadline-plan" data-testid="goal-paused">{t("Цель на паузе: взносы не учитываются в расчётах. Даты и накопления сохранены.")}</p>;
   if (goal.status !== "ACTIVE") return null;
   if (cents(forecast.remaining) === 0n)
     return <p className="goal-deadline-plan" data-testid="goal-deadline-plan">{t("Цель достигнута")}</p>;
@@ -21,6 +22,6 @@ export function GoalDeadlinePlan({goal, onSetDate}: {goal: Goal; onSetDate: () =
     </strong>
     <small>{forecast.overdue ? t("Измените срок, чтобы пересчитать ежемесячный взнос.")
       : t("С учётом накопленного · взносов: {0}", forecast.monthsUntilDeadline ?? "—")}</small>
-    {!forecast.overdue && <small>{t("Первый взнос — сейчас, следующие — раз в месяц. Расчёт не списывает деньги.")}</small>}
+    {!forecast.overdue && <small>{t("Взносы с {0} — ежемесячно. Расчёт не списывает деньги.",calendarLabel(goal.planFromDate))}</small>}
   </div>;
 }

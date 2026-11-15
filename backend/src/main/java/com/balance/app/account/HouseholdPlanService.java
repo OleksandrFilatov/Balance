@@ -16,10 +16,12 @@ public class HouseholdPlanService {
   private final JdbcTemplate jdbc;
   private final Recurrence recurrence;
   private final HouseholdBillingService billing;
-  public HouseholdPlanService(JdbcTemplate jdbc, Recurrence recurrence,HouseholdBillingService billing) { this.jdbc=jdbc; this.recurrence=recurrence; this.billing=billing; }
+  private final HouseholdShiftIncomeService shifts;
+  public HouseholdPlanService(JdbcTemplate jdbc, Recurrence recurrence,HouseholdBillingService billing,HouseholdShiftIncomeService shifts) { this.jdbc=jdbc; this.recurrence=recurrence; this.billing=billing;this.shifts=shifts; }
   public record Income(@NotNull @DecimalMin("0") @Digits(integer=17,fraction=2) BigDecimal mine,
-      @NotNull @DecimalMin("0") @Digits(integer=17,fraction=2) BigDecimal ira, @NotNull @PositiveOrZero Long version,LocalDate myReceiptDate) {
-    public Income(BigDecimal mine,BigDecimal ira,Long version){this(mine,ira,version,null);}
+      @NotNull @DecimalMin("0") @Digits(integer=17,fraction=2) BigDecimal ira, @NotNull @PositiveOrZero Long version,LocalDate myReceiptDate,HouseholdShiftIncomeService.Source mineSource) {
+    public Income(BigDecimal mine,BigDecimal ira,Long version){this(mine,ira,version,null,HouseholdShiftIncomeService.Source.MANUAL);}
+    public Income(BigDecimal mine,BigDecimal ira,Long version,LocalDate date){this(mine,ira,version,date,HouseholdShiftIncomeService.Source.MANUAL);}
   }
   public record Line(UUID categoryId,String name,BigDecimal total,BigDecimal mine,BigDecimal ira,HouseholdSplit split) {}
   public record Group(BigDecimal total,BigDecimal mine,BigDecimal ira) {}
@@ -27,7 +29,7 @@ public class HouseholdPlanService {
       BigDecimal total,BigDecimal mine,BigDecimal ira,BigDecimal paymentAmount,BigDecimal paymentMine,BigDecimal paymentIra) {}
   public record Plan(String month,BigDecimal myIncome,BigDecimal iraIncome,long version,boolean configured,
       BigDecimal difference,BigDecimal total,BigDecimal mine,BigDecimal ira,List<Line> lines,
-      Group fixed,Group additional,BigDecimal minePercent,BigDecimal iraPercent,List<Item> items,LocalDate myReceiptDate) {}
+      Group fixed,Group additional,BigDecimal minePercent,BigDecimal iraPercent,List<Item> items,LocalDate myReceiptDate,HouseholdShiftIncomeService.Source mineSource,HouseholdShiftIncomeService.Estimate shiftIncome) {}
   private record Payment(UUID id,UUID category,String categoryName,String name,BigDecimal amount,
       HouseholdSplit split,LocalDate first,Recurrence.Frequency frequency,String status,LocalDate end) {}
   private record Charge(Payment payment,LocalDate date,BigDecimal amount) {}
@@ -42,14 +44,21 @@ public class HouseholdPlanService {
   @Transactional(isolation=Isolation.READ_COMMITTED)
   public Plan save(String text,Income income) {
     var m=month(text);
+    var source=income.mineSource()==null?HouseholdShiftIncomeService.Source.MANUAL:income.mineSource();
     jdbc.queryForList("select pg_advisory_xact_lock(729145064)");
     var rows=jdbc.queryForList("select version,mine,ira from household_monthly_income where month=?",m.atDay(1));
     long current=rows.isEmpty()?0:((Number)rows.getFirst().get("version")).longValue();
     if(current!=income.version())throw DomainException.conflict("Данные уже изменились. Обновите страницу.");
+    if(source==HouseholdShiftIncomeService.Source.SHIFTS){
+      var net=!rows.isEmpty()&&shifts.locked(m)?(BigDecimal)rows.getFirst().get("mine"):shifts.estimate(text).net();
+      if(net==null)throw DomainException.invalid("Shift take-home pay is unavailable. Enter salary manually.");
+      income=new Income(net,income.ira(),income.version(),income.myReceiptDate(),source);
+    }
+
     boolean amountsChanged=rows.isEmpty()||((BigDecimal)rows.getFirst().get("mine")).compareTo(income.mine())!=0||((BigDecimal)rows.getFirst().get("ira")).compareTo(income.ira())!=0;
     if(amountsChanged)billing.preservePast();
     if(income.myReceiptDate()!=null&&(income.myReceiptDate().isBefore(m.atDay(1))||income.myReceiptDate().getYear()>9999))throw DomainException.invalid("Дата получения зарплаты не может быть раньше месяца работы.");
-    jdbc.update("insert into household_monthly_income(month,mine,ira,version,mine_receipt_date) values(?,?,?,1,?) on conflict(month) do update set mine=excluded.mine,ira=excluded.ira,mine_receipt_date=coalesce(excluded.mine_receipt_date,household_monthly_income.mine_receipt_date),version=household_monthly_income.version+1",m.atDay(1),income.mine(),income.ira(),income.myReceiptDate());
+    jdbc.update("insert into household_monthly_income(month,mine,ira,version,mine_receipt_date,mine_source) values(?,?,?,1,?,?) on conflict(month) do update set mine=excluded.mine,ira=excluded.ira,mine_receipt_date=coalesce(excluded.mine_receipt_date,household_monthly_income.mine_receipt_date),version=household_monthly_income.version+1,mine_source=excluded.mine_source",m.atDay(1),income.mine(),income.ira(),income.myReceiptDate(),source.name());
     if(amountsChanged)billing.incomeChanged(text);
     return get(text);
   }
@@ -61,7 +70,7 @@ public class HouseholdPlanService {
 
   public Plan get(String text) {
     var m=month(text);
-    var incomes=jdbc.queryForList("select mine,ira,version,mine_receipt_date from household_monthly_income where month=?",m.atDay(1));
+    var incomes=jdbc.queryForList("select mine,ira,version,mine_receipt_date,mine_source from household_monthly_income where month=?",m.atDay(1));
     BigDecimal mine=incomes.isEmpty()?ZERO:(BigDecimal)incomes.getFirst().get("mine");
     BigDecimal ira=incomes.isEmpty()?ZERO:(BigDecimal)incomes.getFirst().get("ira");
     long version=incomes.isEmpty()?0:((Number)incomes.getFirst().get("version")).longValue();
@@ -128,6 +137,6 @@ public class HouseholdPlanService {
     var my=fixed.mine()==null?null:fixed.mine().add(extra.mine());
     var percent=share(new BigDecimal("100"),mine,ira);
     var receipt=incomes.isEmpty()||incomes.getFirst().get("mine_receipt_date")==null?SalaryScheduleService.defaultDate(m):((java.sql.Date)incomes.getFirst().get("mine_receipt_date")).toLocalDate();
-    return new Plan(text,mine,ira,version,configured,mine.subtract(ira),total,my,my==null?null:total.subtract(my),lines,fixed,extra,percent,percent==null?null:new BigDecimal("100").subtract(percent),items,receipt);
+    return new Plan(text,mine,ira,version,configured,mine.subtract(ira),total,my,my==null?null:total.subtract(my),lines,fixed,extra,percent,percent==null?null:new BigDecimal("100").subtract(percent),items,receipt,incomes.isEmpty()?HouseholdShiftIncomeService.Source.MANUAL:HouseholdShiftIncomeService.Source.valueOf((String)incomes.getFirst().get("mine_source")),shifts.estimate(text));
   }
 }

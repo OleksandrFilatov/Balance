@@ -8,13 +8,13 @@ Balance brings together your current money, upcoming commitments, and projected 
 
 ## Features
 
-- **Personal finances:** accounts, income, expenses, transaction history, and balances. Review past months and forecast upcoming payments.
+- **Personal finances:** accounts, income, expenses, transaction history, and balances. Review past months and forecast upcoming payments. Expected income includes a source-by-source breakdown with dates and amounts; future receipts do not increase today's available balance.
 - **Shared household expenses:** split fixed household bills in proportion to two participants' incomes, and split additional purchases 50/50. Participant names are customisable.
 - **Monthly planning:** salaries and agreed amounts belong to specific months. Unpaid household bills carry forward, with support for partial payments and deferring the remaining amount to the following month.
 - **Debts and instalments:** payment schedules, repayment progress, upcoming due dates, history, and manual management. Scheduled payments can be recorded automatically while the server is running.
-- **Savings goals:** reserve existing money for goals, track progress, and calculate contributions. Each goal card shows how much to save per month to reach its target date, accounting for money already saved.
+- **Savings goals:** set start and target dates, reserve existing money, track progress, and calculate monthly contributions. Active goal contributions are included in monthly commitments. Pause a goal to exclude its contributions from planning while keeping its dates and savings; recalculating a plan preserves money already reserved.
 - **Calendar and statistics:** upcoming payments, your personal share of household bills, debt repayments, and income and expense charts.
-- **Work-shift calendar:** track working hours, unpaid breaks, hourly rates, and estimated earnings. An approximate German net salary calculation is available for supported 2026 employment conditions.
+- **Work-shift calendar:** track working hours, unpaid breaks, hourly rates, alternating weekly shifts, and estimated earnings. Use estimated net pay in household planning or enter a salary manually. Work months and salary receipt dates are tracked separately.
 - **Interface:** English, German, and Russian; automatic device-language detection; a remembered language preference; light and dark themes; and a responsive layout.
 - **Work wall:** an interactive scene with tally marks linked to completed workdays.
 
@@ -108,7 +108,7 @@ Browser tests require a separate `UiTestServer` started with `-Dbalance.ui-test.
 
 - Each installation has one owner account. Household members are participants in expense calculations, not separate authenticated accounts with individual permissions.
 - Schedulers require the server to be running. They record bookkeeping entries and are not bank standing orders.
-- The salary estimator covers supported standard-employment conditions in Germany for 2026, tax class I, without church tax. It does not cover every tax year or employment arrangement.
+- The salary estimator covers supported standard-employment conditions in Germany for 2026, tax class I, without church tax. Estimates for 2027 are explicitly provisional and use the 2026 calculation rules; they are not a final 2027 payroll calculation. Other unsupported years or employment arrangements require separate calculation.
 - Back up PostgreSQL before updating. Do not edit applied migrations or delete data directories.
 - By default, the server listens only on the local address. Access from other devices requires separately configured secure connectivity.
 

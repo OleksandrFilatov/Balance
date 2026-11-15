@@ -40,4 +40,9 @@ class SavingsPlanningServiceTest {
   }
   @Test void overdueGoalIsNotReportedOnTrack(){var r=calculate(goal("100","0",TODAY.minusDays(1)),"200","0","0","0");assertFalse(r.feasible());}
   @Test void rejectsNegativeOrOverPreciseInputs(){var g=goal("100","0",null);assertThrows(DomainException.class,()->calculate(g,"-1","0","0","0"));assertThrows(DomainException.class,()->calculate(g,"1.001","0","0","0"));}
+  @Test void futureGoalCannotBeCompletedBeforeItsStartDate(){
+    var g=new SavingsGoal();g.id=UUID.randomUUID();g.name="Future";g.description="";g.target=amount("600");g.currency="EUR";g.startDate=TODAY.plusMonths(2);g.deadline=TODAY.plusMonths(4);g.monthlyPlan=BigDecimal.ZERO;g.createdAt=TODAY.atStartOfDay(ZoneOffset.UTC).toInstant();g.status="ACTIVE";g.version=0L;
+    var view=new SavingsMapper().view(g,BigDecimal.ZERO,TODAY);var result=calculate(view,"1000","0","0","0");
+    equal("200",result.recommended());assertEquals(g.deadline,result.estimatedDate());assertTrue(result.feasible());
+  }
 }
